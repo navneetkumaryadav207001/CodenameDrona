@@ -39,10 +39,28 @@ def init_db():
         ''')
         conn.commit()
         cursor.execute('''
+            CREATE TABLE IF NOT EXISTS suggestions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL,
+                message TEXT NOT NULL
+            )
+        ''')
+        conn.commit()
+        cursor.execute('''
             CREATE TABLE IF NOT EXISTS google_users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 google_id TEXT UNIQUE,
                 email TEXT
+            )
+        ''')
+        conn.commit()
+        conn.execute('''
+        CREATE TABLE IF NOT EXISTS chats (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
+            message TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         ''')
         conn.commit()
@@ -78,11 +96,11 @@ def login_post():
         return redirect(url_for('welcome'))
     return redirect(url_for('index'))
 
-@app.route('/welcome')
+@app.route('/dashboard')
 def welcome():
     if 'username' not in session:
         return redirect(url_for('index'))
-    return f'Welcome to the protected area, {session["username"]}!'
+    return render_template("dashboard.html")
 
 @app.route('/register', methods=['POST'])
 def register_post():
@@ -130,5 +148,21 @@ def google_authorized():
 
     return redirect(url_for('index'))
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
+
+@app.route("/suggestions")
+def suggestions():
+    name = request.args.get('name')
+    email = request.args.get('email')
+    suggestion = request.args.get('message')
+    with sqlite3.connect('users.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO suggestions (name, email,message) VALUES (?, ?,?)', (name, email,suggestion))
+        conn.commit()
+    return render_template("welcome.html")
+
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
