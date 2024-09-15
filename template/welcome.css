@@ -17,9 +17,16 @@ body{
 #header{
     padding: 0 40px;
     width: 100%;
-    height: 80px;
+    height: 70px;
     display: flex;
     align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    z-index: 100;
 }
 #header img{
     max-width: 15%;
@@ -67,7 +74,7 @@ body{
     width: 95%;
     margin: auto;
     height: 100vh;
-    padding: 0 30px;
+    padding: 0px 30px;
     background-image: url(image/WhatsApp\ Image\ 2024-09-15\ at\ 17.37.33_cc55ae8b.jpg);
     background-size: cover;
     border-radius: 20px;
@@ -75,11 +82,12 @@ body{
     display: flex;
     flex-direction: column;
     justify-content: center;
-    transition: .5s;
+    margin-top: 100px;
+    /* transition: .5s; */
 }
-#home:hover{
-    scale: 1.02;
-}
+/* #home:hover{
+    scale: 1.01;
+} */
 #home h1{
     font-size: 150px;
     display: flex;
@@ -197,8 +205,10 @@ body{
     width: 100%;
     margin: auto;
     border-radius: 30px;
-    height: 150vh;
-    background: linear-gradient(to right,#235786,#5389b5,#1190ff);
+    height: 160vh;
+    /* background: linear-gradient(to right,#235786,#5389b5,#1190ff); */
+    background-image: url(image/download\ \(1\).png);
+    background-size: cover;
     text-align: center;
 }
 #contactInfo h1{
@@ -206,11 +216,56 @@ body{
     font-family: "Jersey 10", sans-serif;
 }
 #info{
-    width: 50%;
-    height: 70%;
-    background-color: #000;
+    width: 90%;
+    height: 75%;
+    background-color: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
     margin: auto;
     border-radius: 30px;
     padding: 40px 0px;
     font-size: 30px;
+}
+#info p{
+    font-family: "Port Lligat Slab", serif;
+    font-size: 35px;
+}
+#info input{
+    width: 80%;
+    height: 50px;
+    border-radius: 30px;
+    padding: 20px;
+    font-size: 17px;
+    color: black;
+    margin: 20px;
+    text-align: center;
+    font-family: "Jersey 10", sans-serif;
+}
+#contactMessage input{
+    height: 200px;
+}
+#info button{
+    /* width: 100px; */
+    padding: 15px 40px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 30px;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s;
+}
+#info button:hover{
+    background-color: #000;
+    color: white;
+    border: 2px solid white;
+}
+::-webkit-scrollbar{
+    width: 7px;
+}
+::-webkit-scrollbar-thumb{
+    background: linear-gradient(transparent,rgb(22,163,142),#00c6ff);
+    border-radius: 6px;
+    scroll-behavior: smooth;
+}
+::-webkit-scrollbar-thumb:hover{
+    background: linear-gradient(transparent,#00c6ff);
 }
