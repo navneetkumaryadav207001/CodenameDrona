@@ -1,15 +1,22 @@
-import sqlite3,os
+# Imports
+import sqlite3,os,dotenv
 from flask import Flask, render_template, redirect, url_for, session, request, flash
 from flask_bcrypt import Bcrypt
 from authlib.integrations.flask_client import OAuth
 
+# Pre_Setup
+dotenv.load_dotenv()
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 oauth = OAuth(app)
-app.config['SECRET_KEY'] = os.environ.get('secret_key')  # Important for session management
-app.config['GOOGLE_CLIENT_ID'] =  os.environ.get('google_client_id')  # Replace with your Client ID
-app.config['GOOGLE_CLIENT_SECRET'] =  os.environ.get('google_client_secret')  # Replace with your Client Secret
 
+# ENV_Setup
+app.config['SECRET_KEY'] = os.getenv('secret_key')  # Important for session management
+app.config['GOOGLE_CLIENT_ID'] =  os.getenv('google_client_id')  # Replace with your Client ID
+app.config['GOOGLE_CLIENT_SECRET'] =  os.getenv('google_client_secret')  # Replace with your Client Secret
+
+
+# Google Oauth
 google = oauth.register(
     name='google',
     client_id=app.config['GOOGLE_CLIENT_ID'],
@@ -42,6 +49,8 @@ def init_db():
 
 init_db()
 
+
+# ROUTES
 @app.route('/')
 def index():
     return render_template('index.html')
