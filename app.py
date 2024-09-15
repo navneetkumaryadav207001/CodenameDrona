@@ -53,7 +53,7 @@ init_db()
 # ROUTES
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('welcome.html')
 
 @app.route('/login')
 def login():

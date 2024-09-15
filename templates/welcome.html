@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drona AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='welcome.css') }}">
+</head>
+<body>
+    <header id="header">
+        <div id="headerImage">
+            <img src="{{url_for('static',filename='image/Drona.jpg')}}" alt="">
+        </div>
+        <div class="options">
+            <a href="">HOME</a>
+            <a href="">ABOUT</a>
+            <a href="">CONTACT</a>
+            <form action="{{url_for('login')}}" method="get">
+                <button>Log In</button>
+            </form>
+        </div>
+    </header>
+    <div id="home">
+        <div id="homeOptions">
+            <h1>DRONA</h1>
+            <p>Unlock endless possibilities <br> with our AI app—where innovation <br> meets efficiency for smarter <br> solutions and
+            inspired creativity <br> every day</p>
+            <button>Learn More</button>
+        </div>
+    </div>
+    <div id="about">
+        <h1>WANT TO KNOW ABOUT US?</h1>
+        <div id="aboutContainer">
+            <img src="image/download (1).png" alt="">
+        </div>
+    </div>
+    <script src="welcome.js"></script>
+</body>
+</html>

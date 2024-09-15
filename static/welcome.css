@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Jersey+10&family=Port+Lligat+Slab&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Iceberg&display=swap');
+
 *{
     margin: 0;
     padding: 0;
@@ -37,7 +37,7 @@ body{
     cursor: pointer;
     padding: 10px 20px;
     border-radius: 20px;
-    transition: .8s;
+    transition: 0.2s;
 }
 .options a:hover{
     background-color: #fff;
@@ -55,13 +55,6 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: 0.2s;
-    font-weight: 600;
-}
-.options button:hover{
-    background-color: #1E5886;
-    font-size: 17px;
-    color: #fff;
 }
 #home{
     width: 95%;
@@ -75,10 +68,6 @@ body{
     display: flex;
     flex-direction: column;
     justify-content: center;
-    transition: .5s;
-}
-#home:hover{
-    scale: 1.02;
 }
 #home h1{
     font-size: 150px;
@@ -122,95 +111,15 @@ body{
 #aboutContainer{
     width: 100%;
     margin: auto;
-    height: 100vh;
-    background-image: url(image/about.jpg);
-    background-size: cover;
+    height: 70vh;
+    background-color: rgba(255, 255, 255, .15);  
+    backdrop-filter: blur(5px);
     border-radius: 30px;
 }
-#aboutContainer h1{
-    font-family: "Jersey 10", sans-serif;
-    font-size: 100px;
-}
-#aboutContainer p{
-    color: white;
-    font-size: 30px;
-    text-transform: uppercase;
-    font-family: "Iceberg", sans-serif;
-}
-#aboutDrona{
-    width: 55%;
+#aboutContainer img{
+    width: 45%;
+    height: 100%;
     position: absolute;
-    right: 30px;
-    padding-right: 30px;
-}
-#tryDrona{
-    width: 95%;
-    height: 50vh;
-    margin: auto;
-    background-color: rgba(255,255,255,0.15);
-    backdrop-filter: blur(20px);
-    border-radius: 30px;
-    margin-top: 50px;
-}
-#tryDrona h1{
-    font-size: 60px;
-    font-family: "Jersey 10", sans-serif;
-    text-align: center;
-    color: #fff;
-    padding: 30px;
-    letter-spacing: 2px;
-}
-#tryDrona button{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 200px;
-    height: 40px;
-    border-radius: 30px;
-    border: none;
-    gap: 5px;
-    font-size: 22px;
-    padding: 25px 0px;
-    margin: auto;
-    cursor: pointer;
-    transition: 0.3s;
-}
-#tryDrona button i{
-    font-size: 30px;
-}
-#tryDrona button:hover{
-    background-color: #000;
-    color: white;
-}
-#contact{
-    width: 100%;
-    height: 100vh;
-    padding: 0px 30px;
-    color: #fff;
-}
-#contact h1{
-    font-family: "Port Lligat Slab", serif;
-    font-size: 50px;
-    padding: 50px 0px;
-}
-#contactInfo{
-    width: 100%;
-    margin: auto;
-    border-radius: 30px;
-    height: 150vh;
-    background: linear-gradient(to right,#235786,#5389b5,#1190ff);
-    text-align: center;
-}
-#contactInfo h1{
-    font-size: 60px;
-    font-family: "Jersey 10", sans-serif;
-}
-#info{
-    width: 50%;
-    height: 70%;
-    background-color: #000;
-    margin: auto;
-    border-radius: 30px;
-    padding: 40px 0px;
-    font-size: 30px;
+    right: 0;
+    border-radius: 0px 30px 30px 0px;
 }
