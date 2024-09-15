@@ -50,6 +50,10 @@ def index():
 def login():
     return render_template('login.html')
 
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
 @app.route('/login_post', methods=['POST'])
 def login_post():
     username = request.form.get('username')
@@ -62,9 +66,7 @@ def login_post():
 
     if user and bcrypt.check_password_hash(user[0], password):
         session['username'] = username
-        flash('Login successful!', 'success')
         return redirect(url_for('welcome'))
-    flash('Invalid credentials', 'danger')
     return redirect(url_for('index'))
 
 @app.route('/welcome')
@@ -74,7 +76,7 @@ def welcome():
     return f'Welcome to the protected area, {session["username"]}!'
 
 @app.route('/register', methods=['POST'])
-def register():
+def register_post():
     username = request.form.get('username')
     password = request.form.get('password')
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -109,18 +111,15 @@ def google_authorized():
 
         if user:
             session['username'] = user[0]
-            flash('Login successful!', 'success')
             return redirect(url_for('welcome'))
 
         # Register new user
         cursor.execute('INSERT INTO google_users (google_id, email) VALUES (?, ?)', (google_id, email))
         conn.commit()
         session['username'] = email
-        flash('Registration successful! Please log in.', 'success')
         return redirect(url_for('welcome'))
 
-    flash('Failed to fetch user information', 'danger')
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
