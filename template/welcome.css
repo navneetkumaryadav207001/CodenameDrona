@@ -111,15 +111,25 @@ body{
 #aboutContainer{
     width: 100%;
     margin: auto;
-    height: 70vh;
-    background-color: rgba(255, 255, 255, .15);  
-    backdrop-filter: blur(5px);
+    height: 100vh;
+    background-image: url(image/about.jpg);
+    background-size: cover;
     border-radius: 30px;
 }
-#aboutContainer img{
-    width: 45%;
-    height: 100%;
+#aboutContainer h1{
+    font-family: "Jersey 10", sans-serif;
+    font-size: 70px;
+}
+#aboutContainer p{
+    color: white;
+    font-size: 30px;
+    text-transform: uppercase;
+    font-family: "Bebas Neue", sans-serif;
+
+}
+#aboutDrona{
+    width: 55%;
     position: absolute;
-    right: 0;
-    border-radius: 0px 30px 30px 0px;
+    right: 30px;
+    padding-right: 30px;
 }
