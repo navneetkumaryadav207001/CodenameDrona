@@ -1,0 +1,56 @@
+async function getReply(string) {
+	try {
+		// Perform the POST request asynchronously
+		let response = await fetch('/reply', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json', // Set content type to JSON
+			},
+			body: JSON.stringify({ query: string }) // Send query as part of the request body
+		});
+
+		// Check if the response is successful
+		if (response.ok) {
+			// Extract the string from the response
+			let replyString = await response.text(); // Assuming the API returns a plain string
+			console.log(replyString); // Save the result in a variable and use it
+			return replyString; // Return the string if needed elsewhere
+		} else {
+			console.error('Failed to fetch the reply:', response.statusText);
+		}
+	} catch (error) {
+		console.error('Error fetching the reply:', error);
+	}
+}
+
+function addChat(input, product) {
+	const mainDiv = document.getElementById("message-section");
+	let userDiv = document.createElement("div");
+	userDiv.id = "user";
+	userDiv.classList.add("message");
+	userDiv.innerHTML = `<span id="user-response">${input}</span>`;
+	mainDiv.appendChild(userDiv);
+
+	let botDiv = document.createElement("div");
+	botDiv.id = "bot";
+	botDiv.classList.add("message");
+	botDiv.innerHTML = `<span id="bot-response">${product}</span>`;
+	mainDiv.appendChild(botDiv);
+
+	// Scroll to the bottom after adding new messages
+	var scroll = document.getElementById("message-section");
+	scroll.scrollTop = scroll.scrollHeight;
+}
+
+document.getElementById("send").addEventListener("click", async function() {
+	let input = document.getElementById("input").value.trim();
+	if (!input) {
+		return;
+	}
+
+	// Wait for the async getReply to resolve before adding the bot response
+	let reply = await getReply(input); // Wait for the promise to resolve
+	addChat(input, reply);  // Add the input and reply to the chat
+
+	document.getElementById("input").value = ""; // Clear the input field
+});

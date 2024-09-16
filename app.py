@@ -1,4 +1,5 @@
 # Imports
+from cgitb import text
 import sqlite3,os,dotenv,json
 from flask import Flask, render_template, redirect, url_for, session, request, flash
 from flask_bcrypt import Bcrypt
@@ -37,13 +38,7 @@ model = genai.GenerativeModel(
   system_instruction="given the prompt or topic given by user return the title for the topic in the format {is_topic : True ,title:\"title\"} only if the given prompt is a topic or concept otherwise return {is_topic : false , title : Null}",
 )
 
-model2 = genai.GenerativeModel(
-  model_name="gemini-1.5-flash",
-  generation_config=generation_config,
-  # safety_settings = Adjust safety settings
-  # See https://ai.google.dev/gemini-api/docs/safety-settings
-  system_instruction="given the prompt or topic given by user return the title for the topic in the format {title:\"title\"}",
-)
+
 
 
 
@@ -161,7 +156,7 @@ def chat():
         with sqlite3.connect('users.db') as conn:
             cursor = conn.cursor()
             cursor.execute('INSERT INTO topics (topic, user_id) VALUES (?, (select id from users where username = ?))', (topic, session["username"]))
-            return render_template("chat.html")
+            return render_template("chatbot.html")
 
 def title(topic):
     response = model.generate_content(topic)
@@ -169,6 +164,22 @@ def title(topic):
     print(response_data)
     title = response_data[0]['title']
     return title
+
+
+@app.route('/reply',methods=['POST'])
+def reply():
+    data = request.get_json()
+    
+    # Extract the 'query' from the JSON payload
+    query = data.get('query', '')
+    model2 = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",
+    # safety_settings = Adjust safety settings
+    # See https://ai.google.dev/gemini-api/docs/safety-settings
+    system_instruction="answer the given prompt",
+    )
+    response = model2.generate_content(query).candidates[0].content.parts[0].text
+    return response
 
 
 
@@ -258,14 +269,14 @@ def suggestions():
         conn.commit()
     return redirect(url_for('index'))
 
-@app.route('/title')
+"""@app.route('/title')
 def title():
     topic = request.args.get('topic')
     response = model.generate_content(topic)
     response_data = json.loads(str(response.candidates[0].content.parts[0].text))
     print(response_data)
     title = response_data[0]['title']
-    return title
+    return title"""
 
 if __name__ == '__main__':
     app.run(debug=True)
