@@ -1,4 +1,0 @@
-flask
-flask_bcrypt
-authlib
-google-generativeai
