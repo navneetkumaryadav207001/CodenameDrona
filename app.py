@@ -258,6 +258,14 @@ def suggestions():
         conn.commit()
     return redirect(url_for('index'))
 
+@app.route('/title')
+def title():
+    topic = request.args.get('topic')
+    response = model.generate_content(topic)
+    response_data = json.loads(str(response.candidates[0].content.parts[0].text))
+    print(response_data)
+    title = response_data[0]['title']
+    return title
 
 if __name__ == '__main__':
     app.run(debug=True)
