@@ -33,7 +33,7 @@ html{
 }
 .header img{
     width: 30%;
-    height: 30%%;
+    height: 30%;
 }
 .main h1{
     font-size: 45px;
@@ -56,23 +56,25 @@ form{
 }
 form input{
     margin-top: 1.5rem;
-    width: 400px;
+    width: 80%;
     height: 45px;
     border: 1px solid rgb(184, 184, 184);
     border-radius: 5px;
+    padding-left: 20px;
+    font-size: 17.5px;
 }
 form input:active{
     border: 3px solid #1264A3;
 }
 form input::placeholder{
-    padding-left: 0.7rem;
+    /* padding-left: 1rem; */
     font-size: 17.5px;
     display: flex;
     align-items: center;
     color: rgb(93, 93, 93);
 }
 .remember{
-    width: 400px;
+    width: 80%;
     display: flex;
     justify-content: space-between;
     /* align-items: center; */
@@ -95,7 +97,7 @@ form input::placeholder{
     color: #1264A3;
 }
 form button{
-    width: 400px;
+    width: 80%;
     height: 45px;
     border-radius: 12px; 
     background: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
@@ -111,27 +113,30 @@ form p{
     margin-top: 10px;
 }
 .sign-in{
-    margin-top: 25px;
-}
-.sign-in .google{
-    cursor: pointer;
+    width: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
-    width: 400px;
+    justify-content: center;
+}
+.sign-in button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 80%;
     height: 45px;
     border: 2px solid #a9a9a9;
     border-radius: 13px;
     font-weight: 500;
-    gap: 10px;
+    gap: 3px;
     font-size: 19px;
     letter-spacing: -0.5px;
     color: #000;
-    background-color: #fff;
+    background-color: #ffffff;
+    margin: 25px 0 0px 0;
 }
-.sign-in .google i{
-    font-size: 23px;
-    color: #000;
+.sign-in i{
+    font-size: 22px;
 }
 /* .sign-in .apple{
     margin-top: 15px;
@@ -176,4 +181,15 @@ footer p{
 footer a{
     text-decoration: none;
     color: #5e5e5e;
+}
+::-webkit-scrollbar{
+    width: 7px;
+}
+::-webkit-scrollbar-thumb{
+    background: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
+    border-radius: 6px;
+    scroll-behavior: smooth;
+}
+::-webkit-scrollbar-thumb:hover{
+    background: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
 }
