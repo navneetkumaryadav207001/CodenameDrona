@@ -1,11 +1,43 @@
 # Imports
-import sqlite3,os,dotenv
+import sqlite3,os,dotenv,json
 from flask import Flask, render_template, redirect, url_for, session, request, flash
 from flask_bcrypt import Bcrypt
 from authlib.integrations.flask_client import OAuth
 
-# Pre_Setup
+# LoadEnv
 dotenv.load_dotenv()
+
+# Gemini Setup
+import google.generativeai as genai
+
+gem_api = os.getenv('gem_api')
+genai.configure(api_key=gem_api)
+
+import typing_extensions as typing
+
+class title(typing.TypedDict):
+    is_topic : bool
+    title  :str
+# Create the model
+generation_config = {
+  "temperature": 1,
+  "top_p": 0.95,
+  "top_k": 64,
+  "max_output_tokens": 8192,
+  "response_mime_type": "application/json",
+  "response_schema" : list[title]
+}
+
+model = genai.GenerativeModel(
+  model_name="gemini-1.5-flash",
+  generation_config=generation_config,
+  # safety_settings = Adjust safety settings
+  # See https://ai.google.dev/gemini-api/docs/safety-settings
+  system_instruction="given the prompt or topic given by user return the title for the topic in the format {is_topic : True ,title:\"title\"} only if the given prompt is a topic or concept otherwise return {is_topic : false , title : Null}",
+)
+
+
+# Pre_Setup
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 oauth = OAuth(app)
@@ -93,11 +125,11 @@ def login_post():
 
     if user and bcrypt.check_password_hash(user[0], password):
         session['username'] = username
-        return redirect(url_for('welcome'))
+        return redirect(url_for('dashboard'))
     return redirect(url_for('index'))
 
 @app.route('/dashboard')
-def welcome():
+def dashboard():
     if 'username' not in session:
         return redirect(url_for('index'))
     return render_template("dashboard.html")
@@ -138,13 +170,13 @@ def google_authorized():
 
         if user:
             session['username'] = user[0]
-            return redirect(url_for('welcome'))
+            return redirect(url_for('dashboard'))
 
         # Register new user
         cursor.execute('INSERT INTO google_users (google_id, email) VALUES (?, ?)', (google_id, email))
         conn.commit()
         session['username'] = email
-        return redirect(url_for('welcome'))
+        return redirect(url_for('dashboard'))
 
     return redirect(url_for('index'))
 
@@ -162,7 +194,16 @@ def suggestions():
         cursor = conn.cursor()
         cursor.execute('INSERT INTO suggestions (name, email,message) VALUES (?, ?,?)', (name, email,suggestion))
         conn.commit()
-    return render_template("welcome.html")
+    return redirect(url_for('index'))
+
+@app.route('/title')
+def title():
+    topic = request.args.get('topic')
+    response = model.generate_content(topic)
+    response_data = json.loads(str(response.candidates[0].content.parts[0].text))
+    print(response_data)
+    title = response_data[0]['title']
+    return title
 
 if __name__ == '__main__':
     app.run(debug=True)
