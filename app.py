@@ -200,6 +200,7 @@ def suggestions():
 def title():
     topic = request.args.get('topic')
     response = model.generate_content(topic)
+    print(response)
     response_data = json.loads(str(response.candidates[0].content.parts[0].text))
     print(response_data)
     title = response_data[0]['title']
