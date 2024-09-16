@@ -3,6 +3,7 @@ import sqlite3,os,dotenv,json
 from flask import Flask, render_template, redirect, url_for, session, request, flash
 from flask_bcrypt import Bcrypt
 from authlib.integrations.flask_client import OAuth
+import pickle
 
 # LoadEnv
 dotenv.load_dotenv()
@@ -35,6 +36,16 @@ model = genai.GenerativeModel(
   # See https://ai.google.dev/gemini-api/docs/safety-settings
   system_instruction="given the prompt or topic given by user return the title for the topic in the format {is_topic : True ,title:\"title\"} only if the given prompt is a topic or concept otherwise return {is_topic : false , title : Null}",
 )
+
+model2 = genai.GenerativeModel(
+  model_name="gemini-1.5-flash",
+  generation_config=generation_config,
+  # safety_settings = Adjust safety settings
+  # See https://ai.google.dev/gemini-api/docs/safety-settings
+  system_instruction="given the prompt or topic given by user return the title for the topic in the format {title:\"title\"}",
+)
+
+
 
 
 # Pre_Setup
@@ -79,20 +90,18 @@ def init_db():
             )
         ''')
         conn.commit()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS google_users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                google_id TEXT UNIQUE,
-                email TEXT
+        conn.execute('''
+        CREATE TABLE IF NOT EXISTS chats (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            chats BLOB
             )
         ''')
         conn.commit()
         conn.execute('''
-        CREATE TABLE IF NOT EXISTS chats (
+        CREATE TABLE IF NOT EXISTS topics (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL,
-            message TEXT NOT NULL,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+            topic TEXT NOT NULL,
+            user_id INTEGER NOT NULL
             )
         ''')
         conn.commit()
@@ -113,6 +122,7 @@ def login():
 def register():
     return render_template('register.html')
 
+
 @app.route('/login_post', methods=['POST'])
 def login_post():
     username = request.form.get('username')
@@ -132,7 +142,60 @@ def login_post():
 def dashboard():
     if 'username' not in session:
         return redirect(url_for('index'))
-    return render_template("dashboard.html")
+    with sqlite3.connect('users.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT topic,id from topics where user_id = (select id from users where username = ?) ",(session["username"],))
+        data = cursor.fetchall()
+    return render_template("dashboard.html",data = data)
+
+@app.route('/new_chat',methods=["POST"])
+def new_chat():
+    id = request.form["id"]
+    if id == "NULL":
+        return render_template("new_chat.html")
+    
+@app.route('/chat',methods=["POST"])
+def chat():
+    if "flag" in request.form:
+        topic = title(request.form["topic"])
+        with sqlite3.connect('users.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('INSERT INTO topics (topic, user_id) VALUES (?, (select id from users where username = ?))', (topic, session["username"]))
+            return render_template("chat.html")
+
+def title(topic):
+    response = model.generate_content(topic)
+    response_data = json.loads(str(response.candidates[0].content.parts[0].text))
+    print(response_data)
+    title = response_data[0]['title']
+    return title
+
+
+
+@app.route('/send_messages',methods=['POST'])
+def send_messages():
+    message = request.form['message']
+
+    with sqlite3.connect('users.db') as conn:
+        cursor = conn.cursor()
+        serialized_obj = pickle.dumps(obj)
+        cursor.execute('INSERT INTO chats (id, chats) VALUES (?, ?)', (1, serialized_obj))
+        conn.commit()
+    return 'Message sent!', 200
+
+
+@app.route('/fetch_messages', methods=['POST'])
+def fetch_messages():
+    with sqlite3.connect('users.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT chats FROM chats WHERE id = ?', (1,))
+        row = cursor.fetchone()
+        if row:
+            # Deserialize the object
+            session["chat_session"] =  pickle.loads(row[0])
+        messages = conn.execute('SELECT chats FROM chats where id = ?  ').fetchone()[0]
+        conn.close()
+        return json([dict(msg) for msg in messages])
 
 @app.route('/register', methods=['POST'])
 def register_post():
@@ -160,20 +223,19 @@ def login_google():
 def google_authorized():
     token = google.authorize_access_token()
     user_info = token['userinfo']
-    google_id = user_info['sub']
     email = user_info['email']
 
     with sqlite3.connect('users.db') as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT email FROM google_users WHERE google_id = ?', (google_id,))
+        cursor.execute('SELECT username FROM users WHERE username = ?', (email,))
         user = cursor.fetchone()
 
         if user:
-            session['username'] = user[0]
+            session['username'] = email
             return redirect(url_for('dashboard'))
 
         # Register new user
-        cursor.execute('INSERT INTO google_users (google_id, email) VALUES (?, ?)', (google_id, email))
+        cursor.execute('INSERT INTO users (username) VALUES (?)', (email,))
         conn.commit()
         session['username'] = email
         return redirect(url_for('dashboard'))
@@ -196,14 +258,6 @@ def suggestions():
         conn.commit()
     return redirect(url_for('index'))
 
-@app.route('/title')
-def title():
-    topic = request.args.get('topic')
-    response = model.generate_content(topic)
-    response_data = json.loads(str(response.candidates[0].content.parts[0].text))
-    print(response_data)
-    title = response_data[0]['title']
-    return title
 
 if __name__ == '__main__':
     app.run(debug=True)

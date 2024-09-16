@@ -1,12 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
-</head>
-<body>
-    Chat
-    <form action="{{ url_for('dashboard') }}" method="get">
-        <button type="submit">Create New Chat</button>
-    </form>
-</body>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat System</title>
+    <body>
+        <h1>
+            Create New 
+            <form action="{{url_for('new_chat')}}" method="post">
+                <button type="submit">+</button>
+                <input type="hidden" name="id" value="NULL">
+            </form>
+        </h1>
+        {%for i in data%}   
+        {{i}} 
+        {%endfor%}
+    </body>
 </html>
