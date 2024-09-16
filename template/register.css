@@ -63,6 +63,14 @@ form input{
     padding-left: 20px;
     font-size: 17.5px;
 }
+.username{
+    display: flex;
+    justify-content: center;
+    gap: 6%;
+}
+.username input{
+    width: 40%;
+}
 form input:active{
     border: 3px solid #1264A3;
 }
@@ -92,7 +100,7 @@ form input::placeholder{
     font-size: 15px;
 }
 .remember a{
-    margin-top: 5px;
+    font-size: 15px;
     text-decoration: none;
     color: #1264A3;
 }
@@ -133,7 +141,7 @@ form p{
     letter-spacing: -0.5px;
     color: #000;
     background-color: #ffffff;
-    margin: 25px 0 0px 0;
+    margin: 25px 0 40px 0;
 }
 .sign-in i{
     font-size: 22px;
@@ -155,22 +163,10 @@ form p{
 .sign-in .apple i{
     font-size: 20px;
 } */
-.register p{
-    font-size: 15px;
-}
-.register a{
-    text-decoration: none;
-    color: #1264A3;
-    font-size: 15px;
-    letter-spacing: -0.5px;
-}
-.register a:hover{
-    text-decoration: underline;
-}
-footer{
+/* footer{
     display: flex;
     justify-content: center;
-    margin-top: 5px;
+    margin: 25px 0 20px 0;
     align-items: center;
     gap: 50px;
 }
@@ -181,7 +177,7 @@ footer p{
 footer a{
     text-decoration: none;
     color: #5e5e5e;
-}
+} */
 ::-webkit-scrollbar{
     width: 7px;
 }

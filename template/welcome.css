@@ -93,9 +93,10 @@ body{
     font-size: 150px;
     display: flex;
     font-family: "Jersey 10", sans-serif;
-    background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
-    background-clip: text; 
-    color: transparent;
+    /* background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678);  */
+    /* background-clip: text; 
+    color: transparent; */
+    color: #fff;
 }
 #home p{
     font-size: 30px;
@@ -264,10 +265,10 @@ body{
     width: 7px;
 }
 ::-webkit-scrollbar-thumb{
-    background: linear-gradient(transparent,rgb(22,163,142),#00c6ff);
+    background: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
     border-radius: 6px;
     scroll-behavior: smooth;
 }
 ::-webkit-scrollbar-thumb:hover{
-    background: linear-gradient(transparent,#00c6ff);
+    background: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
 }
