@@ -55,15 +55,15 @@
                 <form action="{{url_for('suggestions')}}" method='get'>
                     <div id="contactName">
                         <p>Name:</p>
-                        <input type="text" placeholder="Enter your name" name="name">
+                        <input type="text" placeholder="Enter your name" name="name" required>
                     </div>
                     <div id="contactEmail">
                         <p>Email:</p>
-                        <input type="email" placeholder="Enter your email id" name="email">
+                        <input type="email" placeholder="Enter your email id" name="email" required>
                     </div>
                     <div id="contactMessage">
                         <p>Message:</p>
-                        <input type="text" placeholder="Type your message" name ="message">
+                        <input type="text" placeholder="Type your message" name ="message" required>
                     </div>
                     <button type="submit">Submit</button>
                 </form>
