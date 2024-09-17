@@ -1,0 +1,7 @@
+flaks
+dotenv
+flask
+flaskbcrypt
+authlib
+google
+trying_entensions
