@@ -1,6 +1,6 @@
 flask
 python-dotenv
-flaskbcrypt
+flask_bcrypt
 authlib
 google
 trying_entensions
