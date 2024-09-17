@@ -1,4 +1,4 @@
-flaks
+flask
 dotenv
 flask
 flaskbcrypt
