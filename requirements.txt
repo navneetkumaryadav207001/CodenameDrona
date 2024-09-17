@@ -3,4 +3,4 @@ python-dotenv
 flask_bcrypt
 authlib
 google-generativeai
-typing_extensions
+typing-extensions
