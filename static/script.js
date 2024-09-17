@@ -8,7 +8,6 @@ async function getReply(string) {
 			},
 			body: JSON.stringify({ query: string }) // Send query as part of the request body
 		});
-
 		// Check if the response is successful
 		if (response.ok) {
 			// Extract the string from the response
@@ -53,4 +52,40 @@ document.getElementById("send").addEventListener("click", async function() {
 	addChat(input, reply);  // Add the input and reply to the chat
 
 	document.getElementById("input").value = ""; // Clear the input field
+});
+
+async function loadChatFromDatabase() {
+	try {
+		let response = await fetch('/chat_history', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		if (response.ok) {
+			let chatHistory = await response.json();
+			const mainDiv = document.getElementById("message-section");
+
+			chatHistory.forEach(chat => {
+				let messageDiv = document.createElement("div");
+				messageDiv.id = chat.role;
+				messageDiv.classList.add("message");
+				messageDiv.innerHTML = `<span id="${chat.role}-response">${chat.message}</span>`;
+				mainDiv.appendChild(messageDiv);
+			});
+
+			// Scroll to the bottom after loading chat history
+			var scroll = document.getElementById("message-section");
+			scroll.scrollTop = scroll.scrollHeight;
+		} else {
+			console.error('Failed to load chat history:', response.statusText);
+		}
+	} catch (error) {
+		console.error('Error loading chat history:', error);
+	}
+}
+
+// Load chat history when the page is loaded
+window.addEventListener("load", function() {
+	loadChatFromDatabase();
 });

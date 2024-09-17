@@ -9,7 +9,7 @@
         <h1>
             Create New 
             <form action="{{url_for('chat_add')}}" method="post">
-                <input type="text" name="topic">
+                <input type="text" name="topic" required>
                 <input type="hidden" name="flag" value="True">
                 <button type="submit">submit</button>
             </form>
@@ -31,7 +31,7 @@
               <!-- Empty initially, no predefined #bot or #user -->
             </div>
             <div id="input-section">
-              <input type="text" id="input" placeholder="Type a message...">
+              <input type="text" id="input" placeholder="Type a message..." required>
               <button id="send">Send</button>
             </div>
           </div>

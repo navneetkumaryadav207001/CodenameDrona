@@ -39,7 +39,6 @@ model = genai.GenerativeModel(
 
 model2 = None
 
-
 # Pre_Setup
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -124,34 +123,76 @@ def login_post():
         return redirect(url_for('dashboard'))
     return redirect(url_for('index'))
 
-@app.route('/dashboard',methods=['POST','GET'])
+@app.route('/dashboard', methods=['POST', 'GET'])
 def dashboard():
     if 'username' not in session:
         return redirect(url_for('index'))
+    
+    # Fetch all topics for the logged-in user
     with sqlite3.connect('users.db') as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT topic,id from topics where user_id = (select id from users where username = ?) ",(session["username"],))
+        cursor.execute("SELECT topic, id FROM topics WHERE user_id = (SELECT id FROM users WHERE username = ?)", (session["username"],))
         data = cursor.fetchall()
+
     if request.method == 'POST':
+        session['id'] = request.form['flag']  # Store selected topic ID in session
+        
+        # Load the chat session for the selected topic
         with sqlite3.connect('users.db') as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT topic from topics where id = ?",(request.form['flag'],))
-            topic = cursor.fetchone()[0]
+            cursor.execute("SELECT chat_session, topic FROM topics WHERE id = ?", (session['id'],))
+            row = cursor.fetchone()
+            blobbed_chat_session, topic = row
+            
+            # Check if chat history exists, if not start a new session
+            
+        
+        # Initialize model2 with the selected topic
         global model2
-        model2= genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
-        # safety_settings = Adjust safety settings
-        # See https://ai.google.dev/gemini-api/docs/safety-settings
-        system_instruction=f"assume you are a teacher teaching topic {topic} only answer the question related to the topic answer relavent question in context of the topic if question is not relevant then ask user to ask a relavent question"
+        model2 = genai.GenerativeModel(
+            model_name="gemini-1.5-flash",
+            system_instruction=f"Assume you are a teacher teaching topic {topic}. Only answer questions relevant to the topic. If a question is not relevant, ask the user to ask a relevant question."
         )
-        return render_template("dashboard.html",data = data,flag=topic)
+        if blobbed_chat_session:
+                global chat_session
+                chat_history = pickle.loads(blobbed_chat_session)
+                chat_session = model2.start_chat(history=chat_history)
+        else:
+                chat_session = model2.start_chat(history=[])
+        return render_template("dashboard.html", data=data, flag=topic)
+    
     else:
-        return render_template("dashboard.html",data = data,flag='false')
+        return render_template("dashboard.html", data=data, flag='false')
     
-@app.route('/session_add',methods=['POST'])
-def session_add():
-    pass
+@app.route('/chat_history', methods=['POST'])
+def chat_history():
+    history = []
+    for i in chat_session.history:
+        history_dictionary = {}
+        history_dictionary['role'] = i.role
+        if i.role == "model":
+            history_dictionary["role"] = "bot"
+        history_dictionary['message'] = i.parts[0].text
+        history.append(history_dictionary)
+    return history
+
+
     
+@app.route('/session_update', methods=['POST'])
+def session_update():
+    topic_id = session['id']
+    
+    # Serialize the current chat session's history
+    blobbed_chat_session = pickle.dumps(chat_session.history)
+    
+    # Update the chat session in the database
+    with sqlite3.connect('users.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('UPDATE topics SET chat_session = ? WHERE id = ?', (blobbed_chat_session, topic_id))
+        conn.commit()
+    
+    return "done", 200
+
     
 @app.route('/chat_add',methods=["POST"])
 def chat_add():
@@ -169,15 +210,19 @@ def title(topic):
     return title
 
 
-@app.route('/reply',methods=['POST'])
+@app.route('/reply', methods=['POST'])
 def reply():
     data = request.get_json()
     query = data.get('query', '')
     
-    # Extract the 'query' from the JSON payload
+    # Generate a response using the current session's model (model2)
+    response = chat_session.send_message(query)
     
-    response = model2.generate_content(query).candidates[0].content.parts[0].text
-    return response
+    
+    # Save the updated chat session history in the database
+    session_update()  # Call the session_update to persist the history
+    
+    return response.text
 
 
 @app.route('/register_post', methods=['POST'])
