@@ -37,9 +37,7 @@ model = genai.GenerativeModel(
   system_instruction="given the prompt or topic given by user return the title for the topic in the format {is_topic : True ,title:\"title\"} only if the given prompt is a topic or concept otherwise return {is_topic : false , title : Null}",
 )
 
-
-
-
+model2 = None
 
 
 # Pre_Setup
@@ -85,17 +83,11 @@ def init_db():
         ''')
         conn.commit()
         conn.execute('''
-        CREATE TABLE IF NOT EXISTS chats (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            chats BLOB
-            )
-        ''')
-        conn.commit()
-        conn.execute('''
         CREATE TABLE IF NOT EXISTS topics (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             topic TEXT NOT NULL,
-            user_id INTEGER NOT NULL
+            user_id INTEGER NOT NULL,
+            chat_session BLOB
             )
         ''')
         conn.commit()
@@ -132,7 +124,7 @@ def login_post():
         return redirect(url_for('dashboard'))
     return redirect(url_for('index'))
 
-@app.route('/dashboard')
+@app.route('/dashboard',methods=['POST','GET'])
 def dashboard():
     if 'username' not in session:
         return redirect(url_for('index'))
@@ -140,27 +132,39 @@ def dashboard():
         cursor = conn.cursor()
         cursor.execute("SELECT topic,id from topics where user_id = (select id from users where username = ?) ",(session["username"],))
         data = cursor.fetchall()
-    return render_template("dashboard.html",data = data)
-
-@app.route('/new_chat',methods=["POST"])
-def new_chat():
-    id = request.form["id"]
-    if id == "NULL":
-        return render_template("new_chat.html")
+    if request.method == 'POST':
+        with sqlite3.connect('users.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT topic from topics where id = ?",(request.form['flag'],))
+            topic = cursor.fetchone()[0]
+        global model2
+        model2= genai.GenerativeModel(
+        model_name="gemini-1.5-flash",
+        # safety_settings = Adjust safety settings
+        # See https://ai.google.dev/gemini-api/docs/safety-settings
+        system_instruction=f"assume you are a teacher teaching topic {topic} only answer the question related to the topic answer relavent question in context of the topic if question is not relevant then ask user to ask a relavent question"
+        )
+        return render_template("dashboard.html",data = data,flag=topic)
+    else:
+        return render_template("dashboard.html",data = data,flag='false')
     
-@app.route('/chat',methods=["POST"])
-def chat():
+@app.route('/session_add',methods=['POST'])
+def session_add():
+    pass
+    
+    
+@app.route('/chat_add',methods=["POST"])
+def chat_add():
     if "flag" in request.form:
         topic = title(request.form["topic"])
         with sqlite3.connect('users.db') as conn:
             cursor = conn.cursor()
             cursor.execute('INSERT INTO topics (topic, user_id) VALUES (?, (select id from users where username = ?))', (topic, session["username"]))
-            return render_template("chatbot.html")
+            return redirect(url_for('dashboard'))
 
 def title(topic):
     response = model.generate_content(topic)
     response_data = json.loads(str(response.candidates[0].content.parts[0].text))
-    print(response_data)
     title = response_data[0]['title']
     return title
 
@@ -168,46 +172,15 @@ def title(topic):
 @app.route('/reply',methods=['POST'])
 def reply():
     data = request.get_json()
+    query = data.get('query', '')
     
     # Extract the 'query' from the JSON payload
-    query = data.get('query', '')
-    model2 = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
-    # safety_settings = Adjust safety settings
-    # See https://ai.google.dev/gemini-api/docs/safety-settings
-    system_instruction="answer the given prompt",
-    )
+    
     response = model2.generate_content(query).candidates[0].content.parts[0].text
     return response
 
 
-
-@app.route('/send_messages',methods=['POST'])
-def send_messages():
-    message = request.form['message']
-
-    with sqlite3.connect('users.db') as conn:
-        cursor = conn.cursor()
-        serialized_obj = pickle.dumps(obj)
-        cursor.execute('INSERT INTO chats (id, chats) VALUES (?, ?)', (1, serialized_obj))
-        conn.commit()
-    return 'Message sent!', 200
-
-
-@app.route('/fetch_messages', methods=['POST'])
-def fetch_messages():
-    with sqlite3.connect('users.db') as conn:
-        cursor = conn.cursor()
-        cursor.execute('SELECT chats FROM chats WHERE id = ?', (1,))
-        row = cursor.fetchone()
-        if row:
-            # Deserialize the object
-            session["chat_session"] =  pickle.loads(row[0])
-        messages = conn.execute('SELECT chats FROM chats where id = ?  ').fetchone()[0]
-        conn.close()
-        return json([dict(msg) for msg in messages])
-
-@app.route('/register', methods=['POST'])
+@app.route('/register_post', methods=['POST'])
 def register_post():
     username = request.form.get('username')
     password = request.form.get('password')
@@ -268,14 +241,6 @@ def suggestions():
         conn.commit()
     return redirect(url_for('index'))
 
-"""@app.route('/title')
-def title():
-    topic = request.args.get('topic')
-    response = model.generate_content(topic)
-    response_data = json.loads(str(response.candidates[0].content.parts[0].text))
-    print(response_data)
-    title = response_data[0]['title']
-    return title"""
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

@@ -17,8 +17,8 @@
         <h1>Welcome back!</h1>
         <p>Enter to get unlimited access of data & information</b></p>
         <form action="{{url_for('login_post')}}" method="post">
-            <input type="text" placeholder="name@work-email.com"name="username">
-            <input type="password" placeholder="Password" name="password">
+            <input type="text" placeholder="name@work-email.com"name="username" required>
+            <input type="password" placeholder="Password" name="password" required>
             <div class="remember">
                 <div class="rememberMe">
                     <input type="checkbox">
@@ -29,15 +29,19 @@
             <button type="submit">Continue</button>
             
             <p>OR</p>
-            <div class="sign-in">
-                <h3 class="google"><i class='bx bxl-google' ></i>Continue with Google</h3>
-                <!-- <h3 class="apple"><i class='bx bxl-apple' ></i>Continue with Apple</h3> -->
-            </div>
+        </form>
+            <form action="{{url_for('login_google')}}" method="get">
+                <div class="sign-in">
+                    <button type="submit"><i class='bx bxl-google' ></i>Continue with Google</button>
+                    <!-- <h3 class="google"><i class='bx bxl-google' ></i>Continue with Google</h3> -->
+                    <!-- <h3 class="apple"><i class='bx bxl-apple' ></i>Continue with Apple</h3> -->
+                </div>
+            </form>
             <div class="register">
                 <p>Don't have account?</p>
                 <a href="{{url_for('register')}}">Register Now</a>
             </div>
-        </form>
+        
     </div>
         <footer>
             <p><a href="#">Privacy & terms</a></p>
