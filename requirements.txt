@@ -3,4 +3,4 @@ python-dotenv
 flask_bcrypt
 authlib
 google
-trying_entensions
+typing_extensions
