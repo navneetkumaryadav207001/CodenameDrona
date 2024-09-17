@@ -1,6 +1,5 @@
 flask
 dotenv
-flask
 flaskbcrypt
 authlib
 google
