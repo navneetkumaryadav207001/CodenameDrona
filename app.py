@@ -151,7 +151,7 @@ def dashboard():
         global model2
         model2 = genai.GenerativeModel(
             model_name="gemini-1.5-flash",
-            system_instruction=f"Assume you are a teacher teaching topic {topic}. Only answer questions relevant to the topic. If a question is not relevant, ask the user to ask a relevant question."
+            system_instruction=f"Assume you are a teacher teaching topic {topic}. teach the topic in an interactive way deliver the it like an lecture of personl tutor in bite size may three for line before moving next and then do something interactive maybe ask him if he understood what you taught maybe ask him a question ask him to do some activity.if student ask question then Only answer questions relevant to the topic. If a question is not relevant, ask the user to ask a relevant question."
         )
         if blobbed_chat_session:
                 global chat_session
@@ -159,6 +159,7 @@ def dashboard():
                 chat_session = model2.start_chat(history=chat_history)
         else:
                 chat_session = model2.start_chat(history=[])
+                chat_session.send_message(f"tell me  list of topics you will teach me about the {topic}")
         return render_template("dashboard.html", data=data, flag=topic)
     
     else:
