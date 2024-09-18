@@ -146,12 +146,14 @@ def dashboard():
             
             # Check if chat history exists, if not start a new session
             
-        
+        topic_string = ""
+        for i in data:
+            topic_string = topic_string + i[0] + ","
         # Initialize model2 with the selected topic
         global model2
         model2 = genai.GenerativeModel(
             model_name="gemini-1.5-flash",
-            system_instruction=f"Assume you are a teacher teaching topic {topic}. teach the topic in an interactive way deliver the it like an lecture of personl tutor in bite size may three for line before moving next and then do something interactive maybe ask him if he understood what you taught maybe ask him a question ask him to do some activity.if student ask question then Only answer questions relevant to the topic. If a question is not relevant, ask the user to ask a relevant question."
+            system_instruction=f"Assume you are a teacher teaching topic {topic}. provided that the student knows the topic {topic_string} teach the topic in an interactive way try to connect the topic to the topics student already knows if any of that is relevant deliver the it like an lecture of personl tutor in bite size may three for line before moving next and then do something interactive maybe ask him if he understood what you taught maybe ask him a question ask him to do some activity.if student ask question then Only answer questions relevant to the topic. If a question is not relevant, ask the user to ask a relevant question."
         )
         if blobbed_chat_session:
                 global chat_session
