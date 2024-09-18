@@ -33,7 +33,7 @@ function addChat(input, product) {
 	let botDiv = document.createElement("div");
 	botDiv.id = "bot";
 	botDiv.classList.add("message");
-	botDiv.innerHTML = `<span id="bot-response">${product}</span>`;
+	botDiv.innerHTML = `<span id="bot-response">${marked.parse(product)}</span>`;
 	mainDiv.appendChild(botDiv);
 
 	// Scroll to the bottom after adding new messages
@@ -70,6 +70,10 @@ async function loadChatFromDatabase() {
 				let messageDiv = document.createElement("div");
 				messageDiv.id = chat.role;
 				messageDiv.classList.add("message");
+				if(chat.role == 'bot')
+				{
+					chat.message = marked.parse(chat.message)
+				}
 				messageDiv.innerHTML = `<span id="${chat.role}-response">${chat.message}</span>`;
 				mainDiv.appendChild(messageDiv);
 			});
