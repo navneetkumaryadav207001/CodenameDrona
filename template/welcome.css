@@ -31,6 +31,7 @@ body{
 }
 #header img{
     max-width: 15%;
+    height: auto;
 }
 #header .options{
     display: flex;
@@ -72,9 +73,11 @@ body{
     color: #fff;
 }
 #home{
-    width: 95%;
-    margin: auto;
+    max-width: 95%;
+    flex-grow: 1;
     height: 100vh;
+    margin: auto;
+    /* height: 100vh; */
     padding: 0px 60px;
     background-image: url(image/WhatsApp\ Image\ 2024-09-15\ at\ 17.37.33_cc55ae8b.jpg);
     background-size: cover;

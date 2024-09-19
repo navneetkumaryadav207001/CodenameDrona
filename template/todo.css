@@ -165,3 +165,14 @@ ul li i{
         width: 90%;
     }
 }
+::-webkit-scrollbar{
+    width: 7px;
+}
+::-webkit-scrollbar-thumb{
+    background: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
+    border-radius: 6px;
+    scroll-behavior: smooth;
+}
+::-webkit-scrollbar-thumb:hover{
+    background: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
+}

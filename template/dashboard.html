@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="x-icon" href="image/Drona-removebg-preview.png">
+    <title>DRONA</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+<div class="container">
+    <div class="taskbar" id="taskbar">
+        <div class="taskHead">
+            <div class="taskLogo">
+                <img src="image/Drona-removebg-preview.png" alt="Drona logo">
+                <p>Drona</p>
+            </div>
+            <i class='bx bx-menu' style='color:#ffffff' id="menu" ></i>
+        </div>
+        <hr style="margin: 10px 0px;">
+        <div id="taskSearch">
+            <i class='bx bx-search-alt-2' style='color:#000000' ></i>
+            <input type="text" placeholder="Search">
+        </div>
+        <div id="previousChats">
+            <p>Today</p>
+            <ul>
+                <li>Nothing</li>
+                <li>Something</li>
+                <li>Everything</li>
+            </ul>
+            <!-- <hr> -->
+            <p>Yesterday</p>
+            <ul>
+                <li>Nothing</li>
+                <li>Something</li>
+                <li>Everything</li>
+            </ul>
+            <!-- <hr> -->
+            <p>Last 28 Days</p>
+            <ul>
+                <li>Nothing</li>
+                <li>Something</li>
+                <li>Everything</li>
+            </ul>
+        </div>
+        <div id="newChats">
+            <button id="toDoList">Your today's plan</button>
+            <!-- <i class='bx bx-message-rounded-add' ></i> -->
+            <i class='bx bx-plus-medical'></i>
+            <p id="new">New Chat</p>
+        </div>
+    </div>
+    <div class="chatbot">
+        <div class="chatbotHead">
+            <p id="userName">Hello <span style="background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); background-clip: text; color: transparent;">Naimish</span>,</p>
+            <i class='bx bx-log-out bx-rotate-180' ></i>
+        </div>
+        <div class="card">
+            <!-- <div id="header">
+                <h1>Chatbot</h1>
+            </div> -->
+            <div id="message-section">
+                <div id="bot"></div>
+                <div id="user"></div>
+            </div>
+            <div id="input-section">
+                <input type="text" id="input" placeholder="Have any question? Drona">
+                <i class='bx bx-up-arrow-alt' id="send" ></i>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="dashboard.js"></script>
+</body>
+</html>

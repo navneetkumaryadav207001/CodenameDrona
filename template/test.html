@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide-in Taskbar</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+          }
+          
+          .menu-icon {
+            font-size: 30px;
+            padding: 20px;
+            cursor: pointer;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+          }
+          
+          .taskbar {
+            width: 250px;
+            height: 100%;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            top: 0;
+            right: -250px; /* Initially hidden */
+            transition: right 0.3s ease;
+            overflow-x: hidden;
+            padding-top: 60px;
+          }
+          
+          .taskbar ul {
+            list-style-type: none;
+            padding: 0;
+          }
+          
+          .taskbar ul li {
+            padding: 10px 20px;
+          }
+          
+          .taskbar ul li:hover {
+            background-color: #575757;
+          }
+          
+    </style>
+</head>
+<body>
+  <div class="taskbar" id="taskbar">
+    <div class="menu-icon" id="menuIcon">☰</div>
+    <ul>
+      <li>Task 1</li>
+      <li>Task 2</li>
+      <li>Task 3</li>
+    </ul>
+  </div>
+
+  <script>
+    // Get the elements
+const menuIcon = document.getElementById('menuIcon');
+const taskbar = document.getElementById('taskbar');
+
+// Add event listener to the menu icon
+menuIcon.addEventListener('click', function() {
+  if (taskbar.style.left === '0px') {
+    taskbar.style.left = '250px'; // Hide the taskbar
+  } else {
+    taskbar.style.left = '0px'; // Show the taskbar
+    menuIcon.style.left = '0px';
+  }
+});
+
+  </script>
+</body>
+</html>
