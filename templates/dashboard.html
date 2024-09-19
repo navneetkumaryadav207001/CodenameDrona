@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
+    <title>Chat System</title>
+    <body>
+        <h1>
+            Create New 
+            <form action="{{url_for('chat_add')}}" method="post">
+                <input type="text" name="topic" required>
+                <input type="hidden" name="flag" value="True">
+                <button type="submit">submit</button>
+            </form>
+        </h1>
+    
+        {%for i in data%}   
+        <form action="{{url_for('dashboard')}}" method="post">
+            <input type="hidden" name="topic" value="{{i[0]}}">
+            <input type="hidden" name="flag" value="{{i[1]}}">
+            <button type="submit">{{i[0]}}</button>
+        </form>
+        {%endfor%}
+        {% if flag != 'false'%}
+        <div class="card">
+            <div id="header">
+              <h1>{{flag}}</h1>
+            </div>
+            <div id="message-section">
+              <!-- Empty initially, no predefined #bot or #user -->
+            </div>
+            <div id="input-section">
+              <input type="text" id="input" placeholder="Type a message..." required>
+              <button id="send">Send</button>
+            </div>
+          </div>
+        {%endif%}
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+        <script src="{{url_for('static',filename='script.js')}}"></script>
+    </body>
+</html>

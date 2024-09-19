@@ -1,20 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | DRONA</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='register.css')}}">
+    <link rel="icon" type="x-icon" href="{{url_for('static',filename='image/Drona-removebg-preview.png')}}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-    <h2>Register</h2>
-    <form action="{{ url_for('register') }}" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">Register</button>
-    </form>
-    <h2>Login with Google</h2>
-    <a href="{{ url_for('login_google') }}">Login with Google</a>
+<div class="document">
+    <div class="header">
+        <img src="{{url_for('static',filename='image/Drona-removebg-preview.png')}}" alt="">
+    </div>
+    <div class="main">
+        <h1>Create an account</h1>
+        <p>Already have an account? <a style="text-decoration: none; color: #1264A3" href="{{url_for('login')}}">Login</a></p>
+        <form action="{{url_for('register_post')}}" method="post">
+            <div class="username">
+                <input type="text" placeholder="First name" name="firstname"required>
+                <input type="text" placeholder="Last name" name = "lastname" required>
+            </div>
+            <input type="text" placeholder="name@work-email.com" name="username"required>
+            <input type="password" placeholder="password" required name="password">
+            <div class="remember">
+                <div class="rememberMe">
+                    <input type="checkbox" required>
+                    <p>I agree to the <a href="">terms & conditions*</a></p>
+                </div>
+            </div>
+            <button>Create account</button>
+            <p>OR</p>
+        </form>
+        <form action="{{url_for('login_google')}}" method="get">
+            <div class="sign-in">
+                <button type="submit"><i class='bx bxl-google' ></i>Continue with Google</button>
+                <!-- <h3 class="google"><i class='bx bxl-google' ></i>Continue with Google</h3> -->
+                <!-- <h3 class="apple"><i class='bx bxl-apple' ></i>Continue with Apple</h3> -->
+            </div>
+        </form>
+    </div>
+        <!-- <footer>
+            <p><a href="#">Privacy & terms</a></p>
+            <p><a href="#">Contact us</a></p>
+        </footer> -->
+</div>
 </body>
 </html>

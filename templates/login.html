@@ -1,19 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In | DRONA</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='login.css')}}">
+    <link rel="icon" type="x-icon" href="image/Drona-removebg-preview.png">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-    <h1>Login</h1>
-    <form action="{{ url_for('login') }}" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">Login</button>
-    <h2>Login with Google</h2>
-    <a href="{{ url_for('login_google') }}">Login with Google</a>
+<div class="document">
+    <div class="header">
+        <img src="{{url_for('static',filename='image/Drona-removebg-preview.png')}}" alt="">
+    </div>
+    <div class="main">
+        <h1>Welcome back!</h1>
+        <p>Enter to get unlimited access of data & information</b></p>
+        <form action="{{url_for('login_post')}}" method="post">
+            <input type="text" placeholder="name@work-email.com"name="username" required>
+            <input type="password" placeholder="Password" name="password" required>
+            <div class="remember">
+                <div class="rememberMe">
+                    <input type="checkbox">
+                    <p>Remember me</p>
+                </div>
+                    <a href="#">Forget password?</a>
+            </div>
+            <button type="submit">Continue</button>
+            
+            <p>OR</p>
+        </form>
+            <form action="{{url_for('login_google')}}" method="get">
+                <div class="sign-in">
+                    <button type="submit"><i class='bx bxl-google' ></i>Continue with Google</button>
+                    <!-- <h3 class="google"><i class='bx bxl-google' ></i>Continue with Google</h3> -->
+                    <!-- <h3 class="apple"><i class='bx bxl-apple' ></i>Continue with Apple</h3> -->
+                </div>
+            </form>
+            <div class="register">
+                <p>Don't have account?</p>
+                <a href="{{url_for('register')}}">Register Now</a>
+            </div>
+        
+    </div>
+        <footer>
+            <p><a href="#">Privacy & terms</a></p>
+            <p><a href="#">Contact us</a></p>
+        </footer>
+</div>
 </body>
 </html>
