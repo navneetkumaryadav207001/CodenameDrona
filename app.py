@@ -4,6 +4,7 @@ from flask import Flask, render_template, redirect, url_for, session, request, f
 from flask_bcrypt import Bcrypt
 from authlib.integrations.flask_client import OAuth
 import pickle
+import ast
 
 # LoadEnv
 dotenv.load_dotenv()
@@ -19,6 +20,8 @@ import typing_extensions as typing
 class title(typing.TypedDict):
     is_topic : bool
     title  :str
+class topics(typing.TypedDict):
+    topic : str
 # Create the model
 generation_config = {
   "temperature": 1,
@@ -35,6 +38,12 @@ model = genai.GenerativeModel(
   # safety_settings = Adjust safety settings
   # See https://ai.google.dev/gemini-api/docs/safety-settings
   system_instruction="given the prompt or topic given by user return the title for the topic in the format {is_topic : True ,title:\"title\"} only if the given prompt is a topic or concept otherwise return {is_topic : false , title : Null}",
+)
+model3 = genai.GenerativeModel(
+  model_name="gemini-1.5-flash",
+  # safety_settings = Adjust safety settings
+  # See https://ai.google.dev/gemini-api/docs/safety-settings
+  system_instruction="given the topic list return only the list of the moderately related topics to the target topic in format ['topic1','topic2','topic3'] maximum 3 return [nothing] if none is related close enough",
 )
 
 model2 = None
@@ -86,7 +95,8 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             topic TEXT NOT NULL,
             user_id INTEGER NOT NULL,
-            chat_session BLOB
+            chat_session BLOB,
+            relevent_topics TEXT
             )
         ''')
         conn.commit()
@@ -145,15 +155,37 @@ def dashboard():
             blobbed_chat_session, topic = row
             
             # Check if chat history exists, if not start a new session
-            
+        data2 = ""
+        with sqlite3.connect('users.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT relevent_topics FROM topics WHERE id = ?", (session["id"],))
+            data2 = cursor.fetchall()
         topic_string = ""
-        for i in data:
-            topic_string = topic_string + i[0] + ","
+        for i in data2:
+            topic_string = topic_string + i[0] 
+        topic_list = ast.literal_eval(topic_string)
+        topic_string =  ""
+        topic_string += ",".join(topic_list)
         # Initialize model2 with the selected topic
         global model2
         model2 = genai.GenerativeModel(
             model_name="gemini-1.5-flash",
-            system_instruction=f"Assume you are a teacher teaching topic {topic}. provided that the student knows the topic {topic_string} teach the topic in an interactive way try to connect the topic to the topics student already knows if any of that is relevant deliver the it like an lecture of personl tutor in bite size may three for line before moving next and then do something interactive maybe ask him if he understood what you taught maybe ask him a question ask him to do some activity.if student ask question then Only answer questions relevant to the topic. If a question is not relevant, ask the user to ask a relevant question."
+            system_instruction=f"""
+            Assume you are a teacher teaching a student only topic {topic}. 
+            provided that you taught the student about {topic_string}.
+            if the student ask for the topic list
+            say to student  'assuming that you have studied {topic_string} topics well and ask student to correct you if they have not
+              studied the any of the topics in {topic_string}.'
+            and give them topic list.
+            topic list must include the connection to {topic_string}.
+            follow the topic list and teach the topic in an interactive way
+            if any of that is relevant deliver the it like an lecture of personl tutor in bite size may 
+            three for line before moving next and then do something interactive maybe ask him if he understood 
+            what you taught maybe ask him a question ask him to do some activity.if student ask question then 
+            Only answer questions relevant to the topic.
+            If a question is not relelated to topic, ask the user to ask a relevant question.
+            if the user ask you teach other topic tell them you cant.
+            """
         )
         if blobbed_chat_session:
                 global chat_session
@@ -162,6 +194,7 @@ def dashboard():
         else:
                 chat_session = model2.start_chat(history=[])
                 chat_session.send_message(f"tell me  list of topics you will teach me about the {topic}")
+                session_update()
         return render_template("dashboard.html", data=data, flag=topic)
     
     else:
@@ -200,17 +233,28 @@ def session_update():
 @app.route('/chat_add',methods=["POST"])
 def chat_add():
     if "flag" in request.form:
-        topic = title(request.form["topic"])
+        topic_list = ""
         with sqlite3.connect('users.db') as conn:
             cursor = conn.cursor()
-            cursor.execute('INSERT INTO topics (topic, user_id) VALUES (?, (select id from users where username = ?))', (topic, session["username"]))
+            cursor.execute('SELECT topic from topics where user_id = (select id from users where username = ?)',(session["username"],))
+            topic_list = str(cursor.fetchall())
+        topic = title_generator(request.form["topic"])
+        relevent_topics = most_relevent(topic,topic_list)
+        with sqlite3.connect('users.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('INSERT INTO topics (topic, user_id,relevent_topics) VALUES (?, (select id from users where username = ?),?)', (topic, session["username"],relevent_topics))
+            conn.commit()
             return redirect(url_for('dashboard'))
 
-def title(topic):
+def title_generator(topic):
     response = model.generate_content(topic)
     response_data = json.loads(str(response.candidates[0].content.parts[0].text))
     title = response_data[0]['title']
     return title
+def most_relevent(topic,topic_list):
+    prompt ="target: '"+ topic + "', topics: "+ topic_list
+    response = model3.generate_content(prompt)
+    return str(response.candidates[0].content.parts[0].text)
 
 
 @app.route('/reply', methods=['POST'])

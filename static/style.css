@@ -13,18 +13,22 @@ body {
 }
 
 body .card {
-	height: 45vw;
-	width: 35vw;
+	height: 95vh;
+	width: 100%;
 	background-color: white;
-	margin-left: 30vw;
-	margin-top: 5vw;
-	box-shadow: 2vw 2vw 12vw 3vw #ccc;
+	border: #000 1px solid;
+	border-radius: 11px;
 }
 
 body .card #header {
 	height: 5vw;
 	background: #000;
 	padding: 0vw;
+	text-align: center;
+	justify-items: center;
+	border: #000 2px solid;
+	border-radius: 10px;
+	align-items: start;
 }
 
 body .card #header h1 {

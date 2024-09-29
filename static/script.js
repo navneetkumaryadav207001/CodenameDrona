@@ -1,3 +1,4 @@
+count = 0;
 async function getReply(string) {
 	try {
 		// Perform the POST request asynchronously
@@ -75,7 +76,11 @@ async function loadChatFromDatabase() {
 					chat.message = marked.parse(chat.message)
 				}
 				messageDiv.innerHTML = `<span id="${chat.role}-response">${chat.message}</span>`;
-				mainDiv.appendChild(messageDiv);
+				if(count === 0)
+				{
+					count++;
+				}
+				else{mainDiv.appendChild(messageDiv);}
 			});
 
 			// Scroll to the bottom after loading chat history
