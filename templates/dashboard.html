@@ -32,12 +32,16 @@
                   <h1>{{flag}}</h1>
                 </div>
                 <div id="message-section">
+                  level:{{level}}
                   <!-- Empty initially, no predefined #bot or #user -->
                 </div>
                 <div id="input-section">
                   <input type="text" id="input" placeholder="Type a message..." required>
                   <button id="send">Send</button>
                 </div>
+                {% if level == 1 %}
+                  <button id="skip">Skip</button>
+                {% endif %}
               </div>
             {%endif%}
       </div>

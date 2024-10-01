@@ -1,27 +1,67 @@
 count = 0;
 async function getReply(string) {
-	try {
-		// Perform the POST request asynchronously
-		let response = await fetch('/reply', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json', // Set content type to JSON
-			},
-			body: JSON.stringify({ query: string }) // Send query as part of the request body
-		});
-		// Check if the response is successful
-		if (response.ok) {
-			// Extract the string from the response
-			let replyString = await response.text(); // Assuming the API returns a plain string
-			console.log(replyString); // Save the result in a variable and use it
-			return replyString; // Return the string if needed elsewhere
-		} else {
-			console.error('Failed to fetch the reply:', response.statusText);
-		}
-	} catch (error) {
-		console.error('Error fetching the reply:', error);
-	}
+    try {
+        // Perform the POST request asynchronously
+        let response = await fetch('/reply', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // Set content type to JSON
+            },
+            body: JSON.stringify({ query: string }) // Send query as part of the request body
+        });
+
+        // Check if the response is successful
+        if (!response.ok) {
+            console.error('Failed to fetch the reply:', response.statusText);
+            return; // Exit the function on error
+        }
+
+        // Check if the Content-Type indicates JSON
+        const contentType = response.headers.get('Content-Type');
+        if (contentType && contentType.includes('application/json')) {
+            let data = await response.json();
+
+            if (data.redirect) {
+                console.log("Redirecting to:", data.redirect);
+                
+                // Create a form dynamically to submit a POST request
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = data.redirect;
+
+                // Create hidden inputs for topic and flag
+                const topicInput = document.createElement('input');
+                topicInput.type = 'hidden';
+                topicInput.name = 'topic';
+                topicInput.value = data.topic;
+
+                const flagInput = document.createElement('input');
+                flagInput.type = 'hidden';
+                flagInput.name = 'flag';
+                flagInput.value = data.id;
+                form.appendChild(topicInput);
+                form.appendChild(flagInput);
+                
+                // Append the form to the body and submit it
+                document.body.appendChild(form);
+				
+                form.submit();
+            }
+
+            // Use the parsed JSON data here as needed
+            console.log('JSON Data:', data);
+            return data; // Return data if needed elsewhere
+        } else {
+            // If the response is not JSON, treat it as text
+            let replyString = await response.text(); // Extract the string from the response
+            console.log('Reply String:', replyString); // Save the result in a variable and use it
+            return replyString; // Return the string if needed elsewhere
+        }
+    } catch (error) {
+        console.error('Error fetching the reply:', error);
+    }
 }
+
 
 function addChat(input, product) {
 	const mainDiv = document.getElementById("message-section");
@@ -54,6 +94,15 @@ document.getElementById("send").addEventListener("click", async function() {
 
 	document.getElementById("input").value = ""; // Clear the input field
 });
+skip = document.getElementById("skip");
+if(skip)
+{skip.addEventListener("click", async function() {
+	// Wait for the async getReply to resolve before adding the bot response
+	let reply = await getReply("skip the basics"); // Wait for the promise to resolve
+	addChat("skip the basics", reply);  // Add the input and reply to the chat
+
+	document.getElementById("input").value = ""; // Clear the input field
+});}
 
 async function loadChatFromDatabase() {
 	try {
