@@ -32,6 +32,14 @@ generation_config = {
   "response_mime_type": "application/json",
   "response_schema" : list[title]
 }
+generation_config2 = {
+  "temperature": 1,
+  "top_p": 0.95,
+  "top_k": 64,
+  "max_output_tokens": 8192,
+  "response_mime_type": "application/json",
+  "response_schema" : int
+}
 
 
 model = genai.GenerativeModel(
@@ -63,9 +71,11 @@ model7 = genai.GenerativeModel(
   model_name="gemini-1.5-flash",
   # safety_settings = Adjust safety settings
   # See https://ai.google.dev/gemini-api/docs/safety-settings
-  system_instruction="""given the name of the topic return the json for the assignment and lab on the basis of levels of blooms taxonomy of the topic each assignments and lab contains 10 questions/tasks in the format all levels should be there
-  for label give user interactive things to do maybe give them python code for visulaisation
-  "assignments": {
+  system_instruction="""given the name of the topic return the json with right formatting for the assignment and lab on the basis of levels of blooms taxonomy of the topic each assignments 
+  and lab contains 5 questions you can take text input by giving empty options list for question that need text answers
+  for lab give some text and ask for the report
+  {
+    "assignments": {
         "bloom_level1": [
             {
                 "question": "What is the capital of France?",
@@ -77,6 +87,7 @@ model7 = genai.GenerativeModel(
                 "options": ["Earth", "Mars", "Jupiter", "Saturn"],
                 "correctAnswer": "Mars"
             }
+            #add three more questions
         ],
         "bloom_level2": [
             {
@@ -88,40 +99,44 @@ model7 = genai.GenerativeModel(
                 "question": "What is the largest mammal?",
                 "options": ["Elephant", "Blue Whale", "Giraffe", "Rhino"],
                 "correctAnswer": "Blue Whale"
+
             }
-            #complete for all levels
+            #add three more questions
         ]
+        # Add all levels till level 6
     },
     "labs": {
         "bloom_level1": [
             {
-                "question": "make an app and tell me the result?",
-                "options": ["Hydrogen", "Water", "Oxygen", "Carbon Dioxide"],
-                "correctAnswer": "Water"
+                "question": "Perform the Map Excercise and submit the report excercise details:map everything",
+                "options": [],
+                "correctAnswer": "no correct answer "
             },
-            {
-                "question": "what will happen if you do something",
-                "options": ["Au", "Ag", "Pb", "Fe"],
-                "correctAnswer": "Au"
-            }
         ],
         "bloom_level2": [
             {
-                "question": "some task",
-                "options": ["300,000 km/s", "150,000 km/s", "450,000 km/s", "600,000 km/s"],
-                "correctAnswer": "300,000 km/s"
+                "question": "Take this code and run in your code editor and tell what do you see code:<#include>",
+                "options": [],
+                "correctAnswer": "no correct answer"
             },
-            {
-                "question": "some task for understand",
-                "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
-                "correctAnswer": "Carbon Dioxide"
-            }
-            #complete for all levels
         ]
+        # Add all levels till level 6
     }
 }
 """,
 )
+model8 = genai.GenerativeModel(
+  model_name="gemini-1.5-flash",
+  generation_config=generation_config2,
+  # safety_settings = Adjust safety settings
+  # See https://ai.google.dev/gemini-api/docs/safety-settings
+  system_instruction="""important return only one number ,given the questions 
+  and users answer to those questions return the final score of how many question
+    are right do a very hard checking like mit proffesor note ignore the 
+  right answer list in questions list in questions where task are to be done for example devloping something
+    only saying that i have done it is not enough give marks only if they provide a solid proof""",
+)
+
 
 
 model2 = None
@@ -415,6 +430,8 @@ def assignments():
             cursor.execute('SELECT topic from topics where id = ?',(session["id"],))
             topic = str(cursor.fetchall()[0][0])
     return render_template('assignments.html',topic=topic)
+
+
 @app.route('/assignments_api',methods=['POST'])
 def assignments_api():
     data = request.get_json()  # Get the JSON data from the request
@@ -481,8 +498,16 @@ def reply():
     # Save the updated chat session history in the database
     session_update()  # Call the session_update to persist the history
     return response.text
+@app.route('/check_answers',methods=['POST'])
+def check_answers():
+    data = request.get_json()  # Get the JSON data from the request
+    questions = data.get('questions')  # Extract 'test_type'
+    answers = data.get('answers')
+    prompt ="questions: '"+ str(questions) + "', answers: "+ str(answers)
+    response = model8.generate_content(prompt)
+    correct_count = str(response.candidates[0].content.parts[0].text).strip()
 
-
+    return jsonify({"correctCount": correct_count})
 @app.route('/register_post', methods=['POST'])
 def register_post():
     username = request.form.get('username')
@@ -527,6 +552,7 @@ def google_authorized():
         return redirect(url_for('dashboard'))
 
     return redirect(url_for('index'))
+
 
 @app.route('/logout')
 def logout():
