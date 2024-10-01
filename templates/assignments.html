@@ -203,25 +203,8 @@ function checkAnswers(questions,answers) {
     .then(data => {
         // Display the final score
         displayScore(data.correctCount, answers.length);
-        addScore(data.correctCount, answers.length);
     })
     .catch(error => console.error('Error checking answers:', error));
-}
-function addScore(obtained,total) {
-    // Send the answers to your API to check open-ended questions
-    fetch('/add_data', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ obtained:obtained,total: total })  // Send all answers to the API
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Display the final score
-        displayScore(data.correctCount, answers.length);
-    })
-    .catch(error => console.error('Error Adding data:', error));
 }
 
 function displayScore(correctCount, totalQuestions) {

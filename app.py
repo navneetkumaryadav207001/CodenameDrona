@@ -73,7 +73,7 @@ model7 = genai.GenerativeModel(
   # See https://ai.google.dev/gemini-api/docs/safety-settings
   system_instruction="""given the name of the topic return the json with right formatting for the assignment and lab on the basis of levels of blooms taxonomy of the topic each assignments 
   and lab contains 5 questions you can take text input by giving empty options list for question that need text answers
-  for lab give some text and ask for the report
+  for lab give some text and ask for the report 
   {
     "assignments": {
         "bloom_level1": [
@@ -134,7 +134,8 @@ model8 = genai.GenerativeModel(
   and users answer to those questions return the final score of how many question
     are right do a very hard checking like mit proffesor note ignore the 
   right answer list in questions list in questions where task are to be done for example devloping something
-    only saying that i have done it is not enough give marks only if they provide a solid proof""",
+    only saying that i have done it is not enough give marks only if they provide a solid proof
+    you can only return between zero and number of questions if user dont answer anything return zero""",
 )
 
 
