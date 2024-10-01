@@ -353,7 +353,6 @@ def reply():
             cursor.execute('select level from topics WHERE id = ?', (session['id'],))
             level = cursor.fetchone()[0]
     if "yes" in response2 and level == 1:
-        print("yes")
         with sqlite3.connect('users.db') as conn:
             cursor = conn.cursor()
             cursor.execute('UPDATE topics SET level = ? WHERE id = ?', (2, session['id']))
@@ -369,7 +368,6 @@ def reply():
         response3 = model6.generate_content(response.candidates[0].content.parts[0].text)
         response3 = str(response3.candidates[0].content.parts[0].text)
         try:
-            print(response3)
             if int(response3) and level>1 and int(response3) == level:
                     with sqlite3.connect('users.db') as conn:
                         cursor = conn.cursor()

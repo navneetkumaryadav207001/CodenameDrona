@@ -6,38 +6,68 @@
     <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
     <title>Chat System</title>
     <body>
-      <div style="display: flex;">
-        <div style="width: fit-content;">
+      <div style="display: flex; width: 100vw;" >
+        <div style="width: fit-content;border: 1px grey solid;border-radius:7px;padding:3px 3px 3px 3px;height: 90vh;position: relative;overflow: hidden;">
           <h1 style="width: fit-content;">
             Create New 
             <form action="{{url_for('chat_add')}}" method="post">
                 <input type="text" name="topic" required>
                 <input type="hidden" name="flag" value="True">
-                <button type="submit">submit</button>
+                <button type="submit" >submit</button>
             </form>
         </h1>
-          
+        <br>
+        <br>
+        <div id="previous-topics">
+          <h5 style="text-align: left;">Previous Topics</h5>
           {%for i in data%}   
-          <form action="{{url_for('dashboard')}}" method="post">
+          <form action="{{url_for('dashboard')}}" method="post" >
               <input type="hidden" name="topic" value="{{i[0]}}">
               <input type="hidden" name="flag" value="{{i[1]}}">
-              <button type="submit">{{i[0]}}</button>
+              <button type="submit" style="width: 100%; text-align: left;">{{i[0]}}</button>
           </form>
           {%endfor%}
+        </div>
+          
+          <form action="{{url_for('logout')}}" method="get">
+            <button type="submit" id="logout">LOGOUT</button>
+        </form>
           </div>
             
             {% if flag != 'false'%}
-            <div class="card">
+            <div class="card" style="width: fit-content;border: 1px grey solid;border-radius:7px;padding:3px 3px 3px 3px;height: 90vh;">
                 <div id="header">
                   <h1>{{flag}}</h1>
-                </div>
+                  <div id="level">
+                    Level:{% if level == 1 %}
+                    {{ "Basics 📖" }}
+                    {% elif level == 2 %}
+                    {{ "Remembering 🧠" }}
+                {% elif level == 3 %}
+                    {{ "Understanding 💡" }}
+                {% elif level == 4 %}
+                    {{ "Applying 🛠️" }}
+                {% elif level == 5 %}
+                    {{ "Analyzing 🔍" }}
+                {% elif level == 6 %}
+                    {{ "Evaluating 📝" }}
+                {% elif level == 7 %}
+                    {{ "Creating 🎨" }}
+                  {% elif level == 8 %}
+                    {{ "Socratic Level ♾️" }}
+                {% else %}
+                    {{ "Invalid level" }}
+                {% endif %}
+                  </div>
+                  </div>
+                
                 <div id="message-section">
-                  level:{{level}}
+                  
                   <!-- Empty initially, no predefined #bot or #user -->
                 </div>
-                <div id="input-section">
+                <div id="input-section" style="align-self: center;">
                   <input type="text" id="input" placeholder="Type a message..." required>
-                  <button id="send">Send</button>
+                  <button id="send" >Send</button>
                 </div>
                 {% if level == 1 %}
                   <button id="skip">Skip</button>

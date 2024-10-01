@@ -22,7 +22,6 @@ async function getReply(string) {
             let data = await response.json();
 
             if (data.redirect) {
-                console.log("Redirecting to:", data.redirect);
                 
                 // Create a form dynamically to submit a POST request
                 const form = document.createElement('form');
@@ -49,12 +48,10 @@ async function getReply(string) {
             }
 
             // Use the parsed JSON data here as needed
-            console.log('JSON Data:', data);
             return data; // Return data if needed elsewhere
         } else {
             // If the response is not JSON, treat it as text
-            let replyString = await response.text(); // Extract the string from the response
-            console.log('Reply String:', replyString); // Save the result in a variable and use it
+            let replyString = await response.text(); // Extract the string from the response // Save the result in a variable and use it
             return replyString; // Return the string if needed elsewhere
         }
     } catch (error) {
