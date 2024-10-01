@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ topic }} - Course Resources</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ topic }}</h1>
+    
+    <h2>Assignments</h2>
+    <button class="button" onclick="startTest('assignments', 'bloom_level1')">Assignment 1: Remembering</button>
+    <button class="button" onclick="startTest('assignments', 'bloom_level2')">Assignment 2: Understanding</button>
+    <button class="button" onclick="startTest('assignments', 'bloom_level3')">Assignment 3: Applying</button>
+    <button class="button" onclick="startTest('assignments', 'bloom_level4')">Assignment 4: Analyzing</button>
+    <button class="button" onclick="startTest('assignments', 'bloom_level5')">Assignment 5: Evaluating</button>
+    <button class="button" onclick="startTest('assignments', 'bloom_level6')">Assignment 6: Creating</button>
+
+    <h2>Labs</h2>
+    <button class="button" onclick="startTest('labs', 'bloom_level1')">Lab 1: Remembering</button>
+    <button class="button" onclick="startTest('labs', 'bloom_level2')">Lab 2: Understanding</button>
+    <button class="button" onclick="startTest('labs', 'bloom_level3')">Lab 3: Applying</button>
+    <button class="button" onclick="startTest('labs', 'bloom_level4')">Lab 4: Analyzing</button>
+    <button class="button" onclick="startTest('labs', 'bloom_level5')">Lab 5: Evaluating</button>
+    <button class="button" onclick="startTest('labs', 'bloom_level6')">Lab 6: Creating</button>
+
+    <!-- Modal for the test -->
+    <div id="testModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Test</h2>
+            <div id="questionsContainer"></div>
+            <button onclick="submitTest()">Submit</button>
+            <div id="score" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script>
+        let questions = [];
+        let score = 0;
+
+        // Function to start the test
+        function startTest(test_type, bloom_level) {
+            fetch('/assignments_api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ test_type, bloom_level})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.questions) {
+                    questions = data.questions;
+                    displayQuestions();
+                    document.getElementById('testModal').style.display = "block";
+                } else {
+                    alert(data.error || 'Error fetching questions.');
+                }
+            })
+            .catch(error => console.error('Error fetching questions:', error));
+        }
+
+        // Function to display questions
+        function displayQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = ''; // Clear previous questions
+
+            questions.forEach((question, index) => {
+                const questionHTML = `
+                    <div>
+                        <p>${index + 1}. ${question.question}</p>
+                        ${question.options.map((option, i) => `
+                            <label>
+                                <input type="radio" name="question${index}" value="${option}"> ${option}
+                            </label><br>
+                        `).join('')}
+                    </div>
+                `;
+                container.innerHTML += questionHTML;
+            });
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            document.getElementById('testModal').style.display = "none";
+            score = 0; // Reset score
+            document.getElementById('questionsContainer').innerHTML = '';
+            document.getElementById('score').innerHTML = '';
+        }
+
+        // Function to submit the test
+        function submitTest() {
+            score = 0; // Reset score
+
+            questions.forEach((question, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selectedOption && selectedOption.value === question.correctAnswer) {
+                    score++;
+                }
+            });
+
+            document.getElementById('score').innerHTML = `Your score: ${score} out of ${questions.length}`;
+        }
+    </script>
+</body>
+</html>

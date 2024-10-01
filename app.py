@@ -21,6 +21,8 @@ class title(typing.TypedDict):
     is_topic : bool
     title  :str
 
+
+
 # Create the model
 generation_config = {
   "temperature": 1,
@@ -37,7 +39,7 @@ model = genai.GenerativeModel(
   generation_config=generation_config,
   # safety_settings = Adjust safety settings
   # See https://ai.google.dev/gemini-api/docs/safety-settings
-  system_instruction="given the prompt or topic given by user return the title for the topic in the format {is_topic : True ,title:\"title\"} only if the given prompt is a topic or concept otherwise return {is_topic : false , title : Null}",
+  system_instruction="given the prompt or topic given by user return the title for the topic in the format {is_topic : True ,title:\"title\"} only if the given prompt is a topic or concept otherwise return {is_topic : false , title : Null} title may contain an appropriate emoji",
 )
 model3 = genai.GenerativeModel(
   model_name="gemini-1.5-flash",
@@ -56,6 +58,69 @@ model6 = genai.GenerativeModel(
   # safety_settings = Adjust safety settings
   # See https://ai.google.dev/gemini-api/docs/safety-settings
   system_instruction="high-priority-note -always return a int, given the prompt return blooms taxonomy level number(int) if prompt means the current level is done and we are moving to next return in format 'int' else return 0 return 7 if the last level of booms taxonomy is done",
+)
+model7 = genai.GenerativeModel(
+  model_name="gemini-1.5-flash",
+  # safety_settings = Adjust safety settings
+  # See https://ai.google.dev/gemini-api/docs/safety-settings
+  system_instruction="""given the name of the topic return the json for the assignment and lab on the basis of levels of blooms taxonomy of the topic each assignments and lab contains 10 questions/tasks in the format all levels should be there
+  for label give user interactive things to do maybe give them python code for visulaisation
+  "assignments": {
+        "bloom_level1": [
+            {
+                "question": "What is the capital of France?",
+                "options": ["Paris", "London", "Berlin", "Madrid"],
+                "correctAnswer": "Paris"
+            },
+            {
+                "question": "Which planet is known as the Red Planet?",
+                "options": ["Earth", "Mars", "Jupiter", "Saturn"],
+                "correctAnswer": "Mars"
+            }
+        ],
+        "bloom_level2": [
+            {
+                "question": "What is 2 + 2?",
+                "options": ["3", "4", "5", "6"],
+                "correctAnswer": "4"
+            },
+            {
+                "question": "What is the largest mammal?",
+                "options": ["Elephant", "Blue Whale", "Giraffe", "Rhino"],
+                "correctAnswer": "Blue Whale"
+            }
+            #complete for all levels
+        ]
+    },
+    "labs": {
+        "bloom_level1": [
+            {
+                "question": "make an app and tell me the result?",
+                "options": ["Hydrogen", "Water", "Oxygen", "Carbon Dioxide"],
+                "correctAnswer": "Water"
+            },
+            {
+                "question": "what will happen if you do something",
+                "options": ["Au", "Ag", "Pb", "Fe"],
+                "correctAnswer": "Au"
+            }
+        ],
+        "bloom_level2": [
+            {
+                "question": "some task",
+                "options": ["300,000 km/s", "150,000 km/s", "450,000 km/s", "600,000 km/s"],
+                "correctAnswer": "300,000 km/s"
+            },
+            {
+                "question": "some task for understand",
+                "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
+                "correctAnswer": "Carbon Dioxide"
+            }
+            #complete for all levels
+        ]
+    }
+}
+""",
 )
 
 
@@ -111,7 +176,8 @@ def init_db():
             user_id INTEGER NOT NULL,
             chat_session BLOB,
             relevent_topics TEXT,
-            level INTEGER NOT NULL DEFAULT 1
+            level INTEGER NOT NULL DEFAULT 1,
+            assignments TEXT
             )
         ''')
         conn.commit()
@@ -321,9 +387,10 @@ def chat_add():
             topic_list = str(cursor.fetchall())
         topic = title_generator(request.form["topic"])
         relevent_topics = most_relevent(topic,topic_list)
+        assignments = assignment_generator(topic)
         with sqlite3.connect('users.db') as conn:
             cursor = conn.cursor()
-            cursor.execute('INSERT INTO topics (topic, user_id,relevent_topics,level) VALUES (?, (select id from users where username = ?),?,?)', (topic, session["username"],relevent_topics,1))
+            cursor.execute('INSERT INTO topics (topic, user_id,relevent_topics,level,assignments) VALUES (?, (select id from users where username = ?),?,?,?)', (topic, session["username"],relevent_topics,1,assignments))
             conn.commit()
             return redirect(url_for('dashboard'))
 
@@ -336,6 +403,33 @@ def most_relevent(topic,topic_list):
     prompt ="target: '"+ topic + "', topics: "+ topic_list
     response = model3.generate_content(prompt)
     return str(response.candidates[0].content.parts[0].text)
+def assignment_generator(topic):
+    response = model7.generate_content(topic)
+    return str(response.candidates[0].content.parts[0].text)
+
+@app.route('/assignments')
+def assignments():
+    topic =""
+    with sqlite3.connect('users.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT topic from topics where id = ?',(session["id"],))
+            topic = str(cursor.fetchall()[0][0])
+    return render_template('assignments.html',topic=topic)
+@app.route('/assignments_api',methods=['POST'])
+def assignments_api():
+    data = request.get_json()  # Get the JSON data from the request
+    test_type = data.get('test_type')  # Extract 'test_type'
+    bloom_level = data.get('bloom_level') 
+    assignments = ""
+    with sqlite3.connect('users.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT assignments from topics where id = ?',(session["id"],))
+            assignments = str(cursor.fetchall()[0][0])
+    assignments = assignments.replace("```","")
+    assignments = assignments.replace("json","")
+    assignments= json.loads(assignments)
+    questions = assignments[test_type][bloom_level]
+    return jsonify({"questions": questions})
 
 
 @app.route('/reply', methods=['POST'])
@@ -452,4 +546,4 @@ def suggestions():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
