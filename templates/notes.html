@@ -1,135 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notes App</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f4f4f9;
-    }
-    .container {
-      width: 400px;
-      padding: 20px;
-      background-color: white;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    textarea {
-      width: 100%;
-      height: 150px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #218838;
-    }
-    .notes-list {
-      margin-top: 20px;
-    }
-    .note-item {
-      background-color: #f8f9fa;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-    }
-    .note-item .delete-btn {
-      float: right;
-      background-color: #dc3545;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      cursor: pointer;
-    }
-    .note-item .delete-btn:hover {
-      background-color: #c82333;
-    }
-  </style>
+	<title>Notepad</title>
+	<link rel="stylesheet" href="notes.css">
 </head>
 <body>
+	<div class="head">
+		<div class="headLogo">
+			<link rel="stylesheet" href="{{ url_for('static', filename='notes.css') }}">
+		</div>
+		<div class="headContent">
+			<h1>📝Notepad</h1>
+		</div>
+	</div>
+	<div class="toolbar">
+		<button id="new-note">➕New Note</button>
+		<button id="save-note">📝Save Note</button>
+	</div>
+	<div class="notepad-container">
+		<textarea id="notepad" placeholder="Start typing..."></textarea>
+		<div class="notes-list">
+			<div id="savedNotes" style="display:flex;justify-content:center;">
 
-  <div class="container">
-    <h2>Notes App</h2>
-    <textarea id="note-input" placeholder="Write your note here..."></textarea>
-    <button id="save-btn">Save Note</button>
-
-    <div class="notes-list" id="notes-list"></div>
-  </div>
-
-  <script>
-    const saveBtn = document.getElementById('save-btn');
-    const noteInput = document.getElementById('note-input');
-    const notesList = document.getElementById('notes-list');
-
-    // Load existing notes from localStorage on page load
-    document.addEventListener('DOMContentLoaded', () => {
-      loadNotes();
-    });
-
-    // Save note on button click
-    saveBtn.addEventListener('click', () => {
-      const noteText = noteInput.value.trim();
-      if (noteText !== '') {
-        saveNoteToLocalStorage(noteText);
-        noteInput.value = ''; // Clear the input field
-        loadNotes(); // Reload notes
-      }
-    });
-
-    // Load notes from localStorage and display them
-    function loadNotes() {
-      const notes = getNotesFromLocalStorage();
-      notesList.innerHTML = ''; // Clear current notes list
-
-      notes.forEach((note, index) => {
-        const noteItem = document.createElement('div');
-        noteItem.classList.add('note-item');
-        noteItem.innerHTML = `
-          ${note}
-          <button class="delete-btn" onclick="deleteNote(${index})">Delete</button>
-        `;
-        notesList.appendChild(noteItem);
-      });
-    }
-
-    // Save a new note to localStorage
-    function saveNoteToLocalStorage(note) {
-      const notes = getNotesFromLocalStorage();
-      notes.push(note);
-      localStorage.setItem('notes', JSON.stringify(notes));
-    }
-
-    // Get all notes from localStorage
-    function getNotesFromLocalStorage() {
-      const notes = localStorage.getItem('notes');
-      return notes ? JSON.parse(notes) : [];
-    }
-
-    // Delete note from localStorage
-    function deleteNote(index) {
-      const notes = getNotesFromLocalStorage();
-      notes.splice(index, 1); // Remove note by index
-      localStorage.setItem('notes', JSON.stringify(notes));
-      loadNotes(); // Reload notes after deletion
-    }
-  </script>
-
+			</div>
+		</div>
+	</div>
+	<script src="{{ url_for('static', filename='notes.js') }}"></script>
 </body>
 </html>
