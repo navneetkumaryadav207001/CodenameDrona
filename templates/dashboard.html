@@ -3,84 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
-    <title>Chat System</title>
-    <body>
-      <div style="display: flex; width: 100vw;" >
-        <div style="width: fit-content;border: 1px grey solid;border-radius:7px;padding:3px 3px 3px 3px;height: 90vh;position: relative;overflow: hidden;">
-          <h1 style="width: fit-content;">
-            Create New 
-            <form action="{{url_for('chat_add')}}" method="post">
-                <input type="text" name="topic" required>
-                <input type="hidden" name="flag" value="True">
-                <button type="submit" >Submit</button>
-            </form>
-        </h1>
-        <br>
-        <br>
-        <div id="previous-topics">
-          <h5 style="text-align: left;">Previous Topics</h5>
-          {%for i in data%}   
-          <form action="{{url_for('dashboard')}}" method="post" >
-              <input type="hidden" name="topic" value="{{i[0]}}">
-              <input type="hidden" name="flag" value="{{i[1]}}">
-              <button type="submit" style="width: 100%; text-align: left;">{{i[0]}}</button>
-          </form>
-          {%endfor%}
+    <!-- Link to your static CSS file using Jinja -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>DRONA</title>
+</head>
+<body>
+    <div style="display: flex; width: 100vw;">
+        <!-- Sidebar -->
+        <div style="width: 25vw; border: 1px grey solid; border-radius: 7px; padding: 3px; height: 97vh; position: relative; overflow: hidden;" id="sidebar">
+            <h1 style="width: fit-content;">
+                <!-- Logo and Menu -->
+                <div class="logo">
+                    <i class="bx bx-menu" id="btn" style="font-size: 25px;"></i>
+                    <!-- Uncomment and update the image source if needed -->
+                    <!-- <img src="{{ url_for('static', filename='image/Drona-removebg-preview.png') }}" alt="DRONA Logo" width="70px" height="60px"> -->
+                    <h1 style="margin-left: 30px;">DRONA</h1>
+                </div>
+                <!-- Create New Topic Form -->
+                <form action="{{ url_for('chat_add') }}" method="post" id="mainSearch">
+                    <input type="text" name="topic" placeholder="Want to learn something?" required id="inputSearch">
+                    <input type="hidden" name="flag" value="True">
+                    <button type="submit" id="searchSubmit"><i class='bx bxs-right-arrow-circle'></i></button>
+                </form>
+            </h1>
+            <br><br>
+            <!-- Previous Topics Section -->
+            <div id="previous-topics">
+                <h5 id="PreviousTopics" style="text-align: start; margin-left:20px; background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); background-clip: text; color: transparent;">What you have learnt</h5>
+                <!-- Loop through previous topics using Jinja -->
+                {% for topic in data %}
+                <form action="{{ url_for('dashboard') }}" method="post" class="topic-form">
+                    <input type="hidden" name="topic" value="{{ topic[0] }}">
+                    <input type="hidden" name="flag" value="{{ topic[1] }}">
+                    <button type="submit" style="width: 100%; text-align: left;">📕{{ topic[0] }}</button>
+                </form>
+                {% endfor %}
+                <!-- Additional Buttons -->
+                <div class="additional">
+                    <button id="notes">🧾Notes</button>
+                    <button id="toDoList">📒To-Do List</button>
+                </div>
+                <!-- Logout Button -->
+                <form action="{{ url_for('logout') }}" method="get">
+                    <button type="submit" id="logout">LOGOUT</button>
+                </form>
+            </div>
         </div>
-          
-          <form action="{{url_for('logout')}}" method="get">
-            <button type="submit" id="logout">LOGOUT</button>
-        </form>
-          </div>
-            
-            {% if flag != 'false'%}
-            <div class="card" style="width: fit-content;border: 1px grey solid;border-radius:7px;padding:3px 3px 3px 3px;height: 90vh;">
-                <div id="header">
-                  <h1>{{flag}}</h1>
-                  <div id="level">
-                    Level:{% if level == 1 %}
-                    {{ "Basics 📖" }}
+
+        <!-- Main Content Area -->
+        {% if flag != 'false' %}
+        <div class="card" style="width: 100%; border: 1px grey solid; border-radius: 7px; padding: 3px; height: 97vh; margin-left:20px;">
+            <!-- Header Section -->
+            <div id="header">
+                <h1 style="background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); background-clip: text; color: transparent;">{{ flag }}</h1>
+                <div id="level" style="padding: 5px;">
+                    Level: 
+                    {% if level == 1 %}
+                        Basics 📖
                     {% elif level == 2 %}
-                    {{ "Remembering 🧠" }}
-                {% elif level == 3 %}
-                    {{ "Understanding 💡" }}
-                {% elif level == 4 %}
-                    {{ "Applying 🛠️" }}
-                {% elif level == 5 %}
-                    {{ "Analyzing 🔍" }}
-                {% elif level == 6 %}
-                    {{ "Evaluating 📝" }}
-                {% elif level == 7 %}
-                    {{ "Creating 🎨" }}
-                  {% elif level == 8 %}
-                    {{ "Socratic Level ♾️" }}
-                {% else %}
-                    {{ "Invalid level" }}
-                {% endif %}
-                <form action="{{url_for('assignments')}}" method="get" style="justify-items: right;">
-                  <button type="submit" >assignments</button>
-              </form>
-                  </div>
-                  </div>
-                
-                <div id="message-section">
-                  
-                  <!-- Empty initially, no predefined #bot or #user -->
+                        Remembering 🧠
+                    {% elif level == 3 %}
+                        Understanding 💡
+                    {% elif level == 4 %}
+                        Applying 🛠️
+                    {% elif level == 5 %}
+                        Analyzing 🔍
+                    {% elif level == 6 %}
+                        Evaluating 📝
+                    {% elif level == 7 %}
+                        Creating 🎨
+                    {% elif level == 8 %}
+                        Socratic Level ♾️
+                    {% else %}
+                        Invalid level
+                    {% endif %}
                 </div>
-                <div id="input-section" style="align-self: center;">
-                  <input type="text" id="input" placeholder="Type a message..." required>
-                  <button id="send" >Send</button>
-                </div>
+            </div>
+            
+            <!-- Message Section -->
+            <div id="message-section">
+                <!-- Messages will appear here -->
+                {% for message in messages %}
+                    <div class="message {{ message.sender }}">
+                        <p>{{ message.content }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Input Section -->
+            <div id="input-section" style="align-self: center;">
+                <form action="{{ url_for('send_message') }}" method="post">
+                    <input type="text" name="message" id="input" placeholder="Type a message..." required>
+                    <button type="submit" id="send"><i class='bx bx-send' style="font-size: 25px;"></i></button>
+                </form>
                 {% if level == 1 %}
-                  <button id="skip">Skip</button>
+                    <form action="{{ url_for('skip_level') }}" method="post">
+                        <button type="submit" id="skip"><i class='bx bx-right-arrow-alt'></i></button>
+                    </form>
                 {% endif %}
-              </div>
-            {%endif%}
-      </div>
-      
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+            </div>
+        </div>
+        {% endif %}
+    </div>
     
-        <script src="{{url_for('static',filename='script.js')}}"></script>
-    </body>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
 </html>
