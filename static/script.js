@@ -144,3 +144,26 @@ async function loadChatFromDatabase() {
 window.addEventListener("load", function() {
 	loadChatFromDatabase();
 });
+let btn=document.getElementById('btn');
+let sidebar = document.getElementById('sidebar');
+let chatBot= document.getElementsByClassName('card');
+let search = document.getElementById('mainSearch');
+let topics = document.getElementById('PreviousTopics');
+let sample = document.getElementById('sample');
+let n=0;
+
+btn.addEventListener('click',()=>{
+	if(n%2==0){
+	sidebar.style.width='50px';
+	mainSearch.style.visibility ='hidden';
+	topics.style.visibility = 'hidden';
+	sample.style.visibility = 'hidden';
+	}
+	else{
+	sidebar.style.width='25vw';
+	mainSearch.style.visibility ='visible';
+	topics.style.visibility = 'visible';
+	sample.style.visibility = 'visible';
+	}
+	n++;
+});
