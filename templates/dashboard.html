@@ -11,14 +11,15 @@
 <body>
     <div style="display: flex; width: 100vw;">
         <!-- Sidebar -->
-        <div style="width: 25vw; border: 1px grey solid; border-radius: 7px; padding: 3px; height: 97vh; position: relative; overflow: hidden;" id="sidebar">
+        <div style=" border: 1px grey solid; border-radius: 7px; padding: 3px; height: 97vh; position: relative; overflow: hidden;" id="sidebar">
             <h1 style="width: fit-content;">
                 <!-- Logo and Menu -->
                 <div class="logo">
                     <i class="bx bx-menu" id="btn" style="font-size: 25px;"></i>
+                    
                     <!-- Uncomment and update the image source if needed -->
                     <!-- <img src="{{ url_for('static', filename='image/Drona-removebg-preview.png') }}" alt="DRONA Logo" width="70px" height="60px"> -->
-                    <h1 style="margin-left: 30px;">DRONA</h1>
+                    <h1 style="">DRONA</h1>
                 </div>
                 <!-- Create New Topic Form -->
                 <form action="{{ url_for('chat_add') }}" method="post" id="mainSearch">
@@ -36,24 +37,22 @@
                 <form action="{{ url_for('dashboard') }}" method="post" class="topic-form">
                     <input type="hidden" name="topic" value="{{ topic[0] }}">
                     <input type="hidden" name="flag" value="{{ topic[1] }}">
-                    <button type="submit" style="width: 100%; text-align: left;">📕{{ topic[0] }}</button>
+                    <button type="submit" style="width: 100%; text-align: left;">{{ topic[0] }}</button>
                 </form>
                 {% endfor %}
                 <!-- Additional Buttons -->
-                <div class="additional">
-                    <button id="notes">🧾Notes</button>
-                    <button id="toDoList">📒To-Do List</button>
-                </div>
+
                 <!-- Logout Button -->
                 <form action="{{ url_for('logout') }}" method="get">
                     <button type="submit" id="logout">LOGOUT</button>
                 </form>
             </div>
         </div>
+        <i class="bx bx-menu" id="btn2" style="font-size: 25px; "></i>
 
         <!-- Main Content Area -->
         {% if flag != 'false' %}
-        <div class="card" style="width: 100%; border: 1px grey solid; border-radius: 7px; padding: 3px; height: 97vh; margin-left:20px;">
+        <div class="card" id='card' style=" border: 1px grey solid; border-radius: 7px; padding: 3px; height: 97vh; margin-left:20px;">
             <!-- Header Section -->
             <div id="header">
                 <h1 style="background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); background-clip: text; color: transparent;">{{ flag }}</h1>
@@ -83,25 +82,18 @@
             
             <!-- Message Section -->
             <div id="message-section">
-                <!-- Messages will appear here -->
-                {% for message in messages %}
-                    <div class="message {{ message.sender }}">
-                        <p>{{ message.content }}</p>
-                    </div>
-                {% endfor %}
             </div>
 
             <!-- Input Section -->
             <div id="input-section" style="align-self: center;">
-                <form action="{{ url_for('send_message') }}" method="post">
-                    <input type="text" name="message" id="input" placeholder="Type a message..." required>
-                    <button type="submit" id="send"><i class='bx bx-send' style="font-size: 25px;"></i></button>
-                </form>
+                  <input type="text" id="input" placeholder="Type a message..." required>
+                  <button id="send" ><i style="font-size: 25px" class='bx bxs-send bx-rotate-270' ></i></button>
                 {% if level == 1 %}
-                    <form action="{{ url_for('skip_level') }}" method="post">
                         <button type="submit" id="skip"><i class='bx bx-right-arrow-alt'></i></button>
-                    </form>
                 {% endif %}
+                <form action="{{url_for('assignments')}}" method="get" style="justify-items: right;">
+                    <button type="submit" >📝</button>
+                </form>
             </div>
         </div>
         {% endif %}

@@ -144,26 +144,41 @@ async function loadChatFromDatabase() {
 window.addEventListener("load", function() {
 	loadChatFromDatabase();
 });
+
 let btn=document.getElementById('btn');
 let sidebar = document.getElementById('sidebar');
-let chatBot= document.getElementsByClassName('card');
-let search = document.getElementById('mainSearch');
-let topics = document.getElementById('PreviousTopics');
-let sample = document.getElementById('sample');
-let n=0;
+let btn2=document.getElementById('btn2');
+let card=document.getElementById('card');
 
-btn.addEventListener('click',()=>{
-	if(n%2==0){
-	sidebar.style.width='50px';
-	mainSearch.style.visibility ='hidden';
-	topics.style.visibility = 'hidden';
-	sample.style.visibility = 'hidden';
+let screenWidth = window.innerWidth;
+// Add event listener to button
+btn.addEventListener('click', () => {
+        // Shrink sidebar and hide elements
+        sidebar.style.width = '0px';
+		sidebar.style.visibility = 'hidden';
+		card.style.visibility = 'visible';
+		card.style.width = '100%';
+		btn2.style.visibility = 'visible';
+		btn.style.visibility = 'hidden';
+		btn.classList.add('rotate');
+});
+btn2.addEventListener('click', () => {
+	screenWidth = window.innerWidth;
+        // Shrink sidebar and hide elements
+		if(screenWidth>800)
+       { 
+		console.log("yes");
+		sidebar.style.width = '25vw';
 	}
-	else{
-	sidebar.style.width='25vw';
-	mainSearch.style.visibility ='visible';
-	topics.style.visibility = 'visible';
-	sample.style.visibility = 'visible';
-	}
-	n++;
+		else{
+			console.log("yes2");
+			card.style.visibility = 'visible';
+			card.style.width = '25vw';
+			sidebar.style.width = '75vw';
+		}
+		sidebar.style.visibility = 'visible';
+		btn.style.visibility = 'visible';
+		btn2.style.visibility = 'hidden';
+		btn.classList.remove('rotate');
+    btn2.classList.add('rotate'); 
 });

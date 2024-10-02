@@ -52,6 +52,10 @@ body .card #header {
 #btn{
 	cursor: pointer;
 }
+#btn2{
+	cursor: pointer;
+	height: fit-content;
+}
 h1 button{
 	background-color: #292a2a;
 	border: #fff 1px solid;
@@ -94,8 +98,7 @@ body {
 }
 
 body .card {
-	width: 90%;
-	max-width: 1200px;
+	width: 100%;
 	height: 90vh;
 	background-color: #1e1e1e;
 	border: none;
@@ -135,11 +138,11 @@ body .card #message-section::-webkit-scrollbar-thumb {
 /* Message Bubbles */
 body .card #message-section #bot,
 body .card #message-section #user {
-	/* border: 2px solid #444; */
-	/* border-radius: 15px; */
-	padding: 0.8rem 1rem;
-	line-height: 0.4rem;
-	font-size: 20px;
+	border: 2px solid #444;
+	border-radius: 15px;
+	padding: 1rem;
+	line-height: 1.4rem;
+	font-size: 15px;
 	width: auto; /* Allow the box to fit the content */
 	max-width: 80%; /* Ensure it doesn't take up the full width */
 	word-wrap: break-word; /* Break long words to fit in the box */
@@ -147,21 +150,16 @@ body .card #message-section #user {
 }
 
 body .card #message-section #bot {
-	/* background-color: #333; */
+	background-color: #333;
 	color: #e0e0e0;
 	align-self: flex-start; /* Align bot messages to the left */
 }
 
 body .card #message-section #user {
 	background-color: #444;
-	border: 1px solid #787777;
-	border-radius: 20px;
-	padding: 15px;
-	/* background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
-	background-clip: text; 
-	color: transparent; */
+	border-color: #666;
+	color: #fff;
 	align-self: flex-end; /* Align user messages to the right */
-	text-transform: capitalize;
 }
 
 #logout{
@@ -319,4 +317,33 @@ body .card #message-section #user {
 #sidebar.active ~ .card{
 	left: 250px;
 	width: calc(100%-250px);
+}
+#sidebar {
+    width: 25vw;  /* Default expanded width */
+    transition: width 0.2s ease;  /* Add a smooth transition for the width */
+    overflow: hidden;  /* Hide content when the sidebar shrinks */
+}
+#btn, #btn2 {
+    transition: transform 0.3s ease;  /* Transition for the button (rotation) */
+}
+#btn2{
+	visibility: hidden;
+}
+
+#btn.rotate, #btn2.rotate {
+    transform: rotate(180deg);  /* Rotate 180 degrees */
+}
+
+@media screen and (max-width: 800px) {
+	#sidebar{
+		visibility:visible;
+		width: 75%;
+	}
+	#card{
+		width: 25%;
+		visibility: visible;
+	}
+	#btn2{
+		visibility:hidden;
+	}
 }
