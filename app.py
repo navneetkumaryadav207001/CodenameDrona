@@ -273,6 +273,7 @@ def dashboard():
             teach_model = genai.GenerativeModel(
                 model_name="gemini-1.5-flash",
                 system_instruction=f"""
+                you name is Drona
                 use emojis while talking
                 Assume you are a teacher teaching a student only topic {topic}. 
                 provided that you taught the student about {topic_string}.
@@ -298,6 +299,7 @@ def dashboard():
                                 # safety_settings = Adjust safety settings
                                 # See https://ai.google.dev/gemini-api/docs/safety-settings
                                 system_instruction=f"""
+                                your name is drona
                                  Complete each action one by one for all six levels of Bloom's Taxonomy.
                                  when user ask to start say okay lets start and start teaching
                                  tell the user when one level is complete and say current level is done we are moving to next level
@@ -380,7 +382,13 @@ def chat_history():
         history.append(history_dictionary)
     return history
 
+@app.route('/todo')
+def todo():
+    return render_template("todo.html")
 
+@app.route('/notes')
+def notes():
+    return render_template("notes.html")
     
 @app.route('/session_update', methods=['POST'])
 def session_update():

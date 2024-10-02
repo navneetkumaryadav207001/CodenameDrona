@@ -11,7 +11,7 @@
 <body>
     <div style="display: flex; width: 100vw;">
         <!-- Sidebar -->
-        <div style=" border: 1px grey solid; border-radius: 7px; padding: 3px; height: 97vh; position: relative; overflow: hidden;" id="sidebar">
+        <div style=" border: 1px grey solid; border-radius: 7px; padding: 3px; height: 95vh; position: relative; overflow: hidden;" id="sidebar">
             <h1 style="width: fit-content;">
                 <!-- Logo and Menu -->
                 <div class="logo">
@@ -19,7 +19,7 @@
                     
                     <!-- Uncomment and update the image source if needed -->
                     <!-- <img src="{{ url_for('static', filename='image/Drona-removebg-preview.png') }}" alt="DRONA Logo" width="70px" height="60px"> -->
-                    <h1 style="">DRONA</h1>
+                    <h1 >DRONA</h1>
                 </div>
                 <!-- Create New Topic Form -->
                 <form action="{{ url_for('chat_add') }}" method="post" id="mainSearch">
@@ -41,7 +41,15 @@
                 </form>
                 {% endfor %}
                 <!-- Additional Buttons -->
-
+                <div class="additional">
+                    <form action="{{ url_for('todo') }}" method="get" style="width: 100%;">
+                        <button type="submit" id="toDolist" style="width: 100%;">To-Do List</button>
+                    </form>
+                    <form action="{{ url_for('notes') }}" method="get" style="width: 100%;">
+                        <button type="submit" id="notes" style="width: 100%;">Notes</button>
+                    </form>
+                        
+                </div>
                 <!-- Logout Button -->
                 <form action="{{ url_for('logout') }}" method="get">
                     <button type="submit" id="logout">LOGOUT</button>
@@ -52,7 +60,7 @@
 
         <!-- Main Content Area -->
         {% if flag != 'false' %}
-        <div class="card" id='card' style=" border: 1px grey solid; border-radius: 7px; padding: 3px; height: 97vh; margin-left:20px;">
+        <div class="card" id='card' style=" border: 1px grey solid; border-radius: 7px; padding: 3px; height: 95vh;">
             <!-- Header Section -->
             <div id="header">
                 <h1 style="background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); background-clip: text; color: transparent;">{{ flag }}</h1>
@@ -96,6 +104,12 @@
                 </form>
             </div>
         </div>
+        {% else %}
+        <div class="card" id='card' style=" border: 1px grey solid; border-radius: 7px; padding: 3px; height: 97vh; margin-left:20px; display: flex; justify-content: center; align-items: center;">
+            <image src="{{ url_for('static', filename='image/Drona-removebg-preview.png') }}" style="width: 25%;;"></image>
+            <h1 id="default" style='font-size: 50px; text-align: center;font-family: "Jersey 10", sans-serif;letter-spacing: 2px;'>HELLO THERE, WHAT DO YOU WANT TO <br>LEARN TODAY??</h1>
+            <h1 style='font-size: 50px; text-align: center;font-family: "Jersey 10", sans-serif;letter-spacing: 2px;'>🧑‍🏫</h1>
+            </div>
         {% endif %}
     </div>
     

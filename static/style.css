@@ -166,7 +166,7 @@ body .card #message-section #user {
 	width: 98%; 
 	text-align: left; 
 	bottom:0;
-	background-color: #1e1e1e;
+	background-color: #fa2a55;
 	position: absolute;
 	text-align: center;
 	height: 45px;
@@ -175,12 +175,12 @@ body .card #message-section #user {
 	width: 98%; 
 	text-align: left; 
 	bottom:0;
-	background-color: #fa2a55;
+	background-color: #fd0f3e;
 	position: absolute;
 	text-align: center;
 }
 #previous-topics {
-    max-height: 60vh;                /* Maximum height for the topics section */
+    max-height: 50vh;                /* Maximum height for the topics section */
     overflow: hidden;                /* Hide overflow by default */            /* Margin at the bottom */
     transition: overflow-y 1s; 
 	scrollbar-width: thin;
@@ -346,4 +346,12 @@ body .card #message-section #user {
 	#btn2{
 		visibility:hidden;
 	}
+}
+#default{
+	transition: 0.3s ease;
+}
+#default:hover{
+	background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678);
+	 background-clip: text;
+	  color: transparent;
 }
