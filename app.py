@@ -289,6 +289,7 @@ def dashboard():
                 if the user ask you teach other topic tell them you cant.
                 if you have taught everything from the {topic_string} or user ask to skip move to the next part which is blooms taxonomy levels and
                 reply 'basics are complete and move to blooms taxonomy level:rememebering ask them if they are ready for level 1 of blooms taxonomy'.
+                HIGHT NOTE -> after every three non topic related chats ask student to return to topic do not teach or talk anything other than {topic}
                 """)
         else:
             teach_model = genai.GenerativeModel(
@@ -296,10 +297,12 @@ def dashboard():
                                 # safety_settings = Adjust safety settings
                                 # See https://ai.google.dev/gemini-api/docs/safety-settings
                                 system_instruction=f"""
-                                 Complete each action one by one for all six levels of Bloom's Taxonomy. After every five non-action-related chats, I'll remind you to return to the actions.
+                                 Complete each action one by one for all six levels of Bloom's Taxonomy.
                                  when user ask to start say okay lets start and start teaching
                                  tell the user when one level is complete and say current level is done we are moving to next level
                                  important:-changing the level,skipping the level in any manner is not allowed just say changing the level is not allowed in short user cannot control the level even can query about so
+                                 HIGHT NOTE -> after every three non topic related chats ask student to return to topic
+                                 do not teach or talk anything other than {topic}
 Level 1: Remembering
 Teach the student on level one of Bloom's Taxonomy (Facts):
 Start by introducing the basic facts related to {topic}. Use various techniques such as interactive questions, visual aids, and mnemonic devices to help them remember key information. Take your time, using 10-20 interactive bites to ensure they grasp everything relevant. Encourage them to summarize the information in their own words and share tips for remembering.
