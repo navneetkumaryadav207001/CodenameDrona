@@ -138,7 +138,6 @@ body .card #message-section::-webkit-scrollbar-thumb {
 /* Message Bubbles */
 body .card #message-section #bot,
 body .card #message-section #user {
-	border: 2px solid #444;
 	border-radius: 15px;
 	padding: 1rem;
 	line-height: 1.4rem;
@@ -150,7 +149,8 @@ body .card #message-section #user {
 }
 
 body .card #message-section #bot {
-	background-color: #333;
+	padding: 1.5rem;
+	background-color: #49484856;
 	color: #e0e0e0;
 	align-self: flex-start; /* Align bot messages to the left */
 }
