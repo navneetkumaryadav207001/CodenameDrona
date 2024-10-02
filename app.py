@@ -47,7 +47,7 @@ model = genai.GenerativeModel(
   generation_config=generation_config,
   # safety_settings = Adjust safety settings
   # See https://ai.google.dev/gemini-api/docs/safety-settings
-  system_instruction="given the prompt or topic given by user return the title for the topic in the format {is_topic : True ,title:\"title\"} only if the given prompt is a topic or concept otherwise return {is_topic : false , title : Null} title may contain an appropriate emoji",
+  system_instruction="given the prompt or topic given by user return the title for the topic in the format {is_topic : True ,title:\"title\"} only if the given prompt is a topic or concept otherwise return {is_topic : false , title : NOTHING} title may contain an appropriate emoji",
 )
 model3 = genai.GenerativeModel(
   model_name="gemini-1.5-flash",
@@ -402,6 +402,8 @@ def chat_add():
             cursor.execute('SELECT topic from topics where user_id = (select id from users where username = ?)',(session["username"],))
             topic_list = str(cursor.fetchall())
         topic = title_generator(request.form["topic"])
+        if(topic == "NOTHING"):
+            return redirect(url_for('dashboard'))
         relevent_topics = most_relevent(topic,topic_list)
         assignments = assignment_generator(topic)
         with sqlite3.connect('users.db') as conn:
