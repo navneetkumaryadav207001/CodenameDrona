@@ -1,0 +1,4 @@
+google_client_id = your google client id
+google_client_secret = you google client secret
+secret_key = secret key
+gem_api = gemini epi key
