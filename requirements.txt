@@ -4,3 +4,4 @@ flask_bcrypt
 authlib
 google-generativeai
 typing-extensions
+gunicorn
