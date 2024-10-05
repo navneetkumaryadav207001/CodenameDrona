@@ -1,16 +1,17 @@
 # Imports
 import sqlite3,os,dotenv,json
 from flask import Flask, render_template, redirect, url_for, session, request, flash,jsonify
+from flask_session import Session
 from flask_bcrypt import Bcrypt
 from authlib.integrations.flask_client import OAuth
 import pickle
 import ast
-
 # LoadEnv
 dotenv.load_dotenv()
 
 # Gemini Setup
 import google.generativeai as genai
+from google.generativeai import protos
 
 gem_api = os.getenv('gem_api')
 genai.configure(api_key=gem_api)
@@ -145,6 +146,12 @@ model5= None
 
 # Pre_Setup
 app = Flask(__name__)
+
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_FILE_DIR'] = './flask_session/'  # Directory to store session files
+app.config['SESSION_PERMANENT'] = False
+Session(app)
+
 bcrypt = Bcrypt(app)
 oauth = OAuth(app)
 
@@ -199,6 +206,50 @@ def init_db():
         conn.commit()
 
 init_db()
+
+
+
+def serialize_chat_session(chat_session):
+    """Serialize the ChatSession object."""
+    
+    print(type(chat_session.model))
+    # Serialize the model
+    serialized_model = {
+        'model_name': chat_session.model.model_name,
+        'system_instruction': chat_session.model._system_instruction,
+    }
+    
+    # Serialize history
+    serialized_history = [
+        {
+            'parts': [{'text': part.text} for part in content.parts],
+            'role': content.role
+        } for content in chat_session.history
+    ]
+    
+    return {
+        'model': serialized_model,
+        'history': serialized_history
+    }
+
+def deserialize_chat_session(serialized_chat_session):
+    """Deserialize a dictionary back to a ChatSession object."""
+    
+    # Deserialize the model
+    model_data = serialized_chat_session['model']
+    model = genai.GenerativeModel(
+        model_name=model_data['model_name'],
+        system_instruction=model_data['system_instruction'],
+    )
+    
+    # Deserialize history
+    history = [
+        protos.Content(parts=[{'text': part['text']} for part in content_dict['parts']], role=content_dict['role'])
+        for content_dict in serialized_chat_session['history']
+    ]
+    
+    return genai.ChatSession(model=model, history=history)
+
 
 
 # ROUTES
@@ -261,7 +312,6 @@ def dashboard():
             data2 = cursor.fetchall()
         
         level = data2[0][1]
-        teach_model = None
         if(level == 1):
             topic_string = ""
             for i in data2:
@@ -270,7 +320,7 @@ def dashboard():
             topic_string =  ""
             topic_string += ",".join(topic_list)
             # Initialize model2 with the selected topic
-            teach_model = genai.GenerativeModel(
+            session['teach_model'] = pickle.dumps(genai.GenerativeModel(
                 model_name="gemini-1.5-flash",
                 system_instruction=f"""
                 you name is Drona
@@ -292,9 +342,9 @@ def dashboard():
                 if you have taught everything from the {topic_string} or user ask to skip move to the next part which is blooms taxonomy levels and
                 reply 'basics are complete and move to blooms taxonomy level:rememebering ask them if they are ready for level 1 of blooms taxonomy'.
                 HIGHT NOTE -> after every three non topic related chats ask student to return to topic do not teach or talk anything other than {topic}
-                """)
+                """))
         else:
-            teach_model = genai.GenerativeModel(
+            session['teach_model'] = pickle.dumps(genai.GenerativeModel(
                                 model_name="gemini-1.5-flash",
                                 # safety_settings = Adjust safety settings
                                 # See https://ai.google.dev/gemini-api/docs/safety-settings
@@ -355,15 +405,22 @@ Ask them to ask any question and answer them with a question leading to answer.
 Reminder: After five non-action-related chats, I'll prompt you to return to the actions for further learning and testing on Bloom's Taxonomy levels.
 
                                  """,
-                                )
+                                ))
         
         if blobbed_chat_session:
-                global chat_session
                 chat_history = pickle.loads(blobbed_chat_session)
-                chat_session = teach_model.start_chat(history=chat_history)
+                chat_session = pickle.loads(session["teach_model"]).start_chat(history=chat_history)
+                serialized_chat_session = serialize_chat_session(chat_session)
+
+    # Save the serialized chat session back into the session
+                session['chat_session'] = pickle.dumps(serialized_chat_session)
         else:
-                chat_session = teach_model.start_chat(history=[])
+                chat_session = pickle.loads(session["teach_model"]).start_chat(history=[])
                 chat_session.send_message(f"tell me  list of topics you will teach me about the {topic}")
+                serialized_chat_session = serialize_chat_session(chat_session)
+
+    # Save the serialized chat session back into the session
+                session['chat_session'] = pickle.dumps(serialized_chat_session)
                 session_update()
         return render_template("dashboard.html", data=data, flag=topic,level = level)
     
@@ -373,6 +430,8 @@ Reminder: After five non-action-related chats, I'll prompt you to return to the 
 @app.route('/chat_history', methods=['POST'])
 def chat_history():
     history = []
+    serialized_chat_session = pickle.loads(session['chat_session'])
+    chat_session = deserialize_chat_session(serialized_chat_session)
     for i in chat_session.history:
         history_dictionary = {}
         history_dictionary['role'] = i.role
@@ -393,7 +452,8 @@ def notes():
 @app.route('/session_update', methods=['POST'])
 def session_update():
     topic_id = session['id']
-    
+    serialized_chat_session = pickle.loads(session['chat_session'])
+    chat_session = deserialize_chat_session(serialized_chat_session)
     # Serialize the current chat session's history
     blobbed_chat_session = pickle.dumps(chat_session.history)
     
@@ -470,8 +530,17 @@ def reply():
     data = request.get_json()
     query = data.get('query', '')
     
+    serialized_chat_session = pickle.loads(session['chat_session'])
+    chat_session = deserialize_chat_session(serialized_chat_session)
+    
     # Generate a response using the current session's model (model2)
     response = chat_session.send_message(query)
+    
+
+    serialized_chat_session = serialize_chat_session(chat_session)
+
+    # Save the serialized chat session back into the session
+    session['chat_session'] = pickle.dumps(serialized_chat_session)
     response2 = model4.generate_content(response.candidates[0].content.parts[0].text)
     response2 = str(response2.candidates[0].content.parts[0].text)
     level = 1
@@ -588,4 +657,4 @@ def suggestions():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
