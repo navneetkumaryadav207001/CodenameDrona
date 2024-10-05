@@ -3,4 +3,4 @@ running the app is pretty simple->
 2.run pip install -r requirements.txt
 3.run python app.py
 4.database is hosted locally
-5.Website link https://codenamedrona.onrender.com (hosted after project submission)
+5.Website link https://dronaai.onrender.com (hosted after project submission)
