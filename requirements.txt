@@ -5,3 +5,4 @@ authlib
 google-generativeai
 typing-extensions
 gunicorn
+flask_session
