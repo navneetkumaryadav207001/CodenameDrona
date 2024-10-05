@@ -486,10 +486,13 @@ def chat_add():
             return redirect(url_for('dashboard'))
 
 def title_generator(topic):
-    response = model.generate_content(topic)
-    response_data = json.loads(str(response.candidates[0].content.parts[0].text))
-    title = response_data[0]['title']
-    return title
+    try:
+        response = model.generate_content(topic)
+        response_data = json.loads(str(response.candidates[0].content.parts[0].text))
+        title = response_data[0]['title']
+        return title
+    except:
+        return "Nothing"
 def most_relevent(topic,topic_list):
     prompt ="target: '"+ topic + "', topics: "+ topic_list
     response = model3.generate_content(prompt)
