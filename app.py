@@ -286,7 +286,7 @@ def login_post():
 @app.route('/dashboard', methods=['POST', 'GET'])
 def dashboard():
     if 'username' not in session:
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
     
     # Fetch all topics for the logged-in user
     with sqlite3.connect('users.db') as conn:
