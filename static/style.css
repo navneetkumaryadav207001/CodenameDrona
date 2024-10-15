@@ -150,7 +150,7 @@ body .card #message-section #user {
 
 body .card #message-section #bot {
 	padding: 1.5rem;
-	background: linear-gradient(180deg,#908c29,#100314 13.71%,#100314 34.62%,#426bfc 68.56%);
+	background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
 	color: #e0e0e0;
 	align-self: flex-start; /* Align bot messages to the left */
 }
