@@ -150,8 +150,12 @@ body .card #message-section #user {
 
 body .card #message-section #bot {
 	padding: 1.5rem;
+/* 	background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678);  */
+	background-color: rgba(169, 169, 169, 0.15);
 	background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
-	color: #e0e0e0;
+    	background-clip: text; 
+    	color: transparent;
+/* 	color: #e0e0e0; */
 	align-self: flex-start; /* Align bot messages to the left */
 }
 
