@@ -153,10 +153,7 @@ body .card #message-section #bot {
 	font-size:1.7rem;
 /* 	background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678);  */
 	background-color: rgba(169, 169, 169, 0.15);
-	background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
-    	background-clip: text; 
-    	color: transparent;
-/* 	color: #e0e0e0; */
+	color: #e0e0e0;
 	align-self: flex-start; /* Align bot messages to the left */
 }
 
