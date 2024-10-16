@@ -41,7 +41,7 @@ tl.from("#homeImage img",{
 },"-=0.5")
 
 gsap.from("#aboutDrona",{
-    scale:2,
+    scale:1.5,
     x:-300,
     opacity:0,
     duration:0.5,
@@ -55,7 +55,7 @@ gsap.from("#aboutDrona",{
 })
 
 gsap.from("#aboutImage img",{
-    scale:2,
+    scale:1.5,
     x:300,
     opacity:0,
     duration:0.5,
