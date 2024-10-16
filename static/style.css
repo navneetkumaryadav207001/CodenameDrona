@@ -150,6 +150,7 @@ body .card #message-section #user {
 
 body .card #message-section #bot {
 	padding: 1.5rem;
+	font-size:1.7rem;
 /* 	background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678);  */
 	background-color: rgba(169, 169, 169, 0.15);
 	background-image: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
