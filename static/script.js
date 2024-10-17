@@ -79,34 +79,19 @@ function addChat(input, product) {
 	scroll.scrollTop = scroll.scrollHeight;
 }
 
-document.getElementById("send").addEventListener("click", async function(e) {
+document.getElementById("send").addEventListener("click", async function() {
 	let input = document.getElementById("input").value.trim();
-	let reply = await getReply(input); 
-	if(e.key==='Enter'){
 	if (!input) {
 		return;
 	}
 
 	// Wait for the async getReply to resolve before adding the bot response
-		// Wait for the promise to resolve
+	let reply = await getReply(input); // Wait for the promise to resolve
 	addChat(input, reply);  // Add the input and reply to the chat
 
-	document.getElementById("input").value = ""; 
-	}// Clear the input field
+	document.getElementById("input").value = ""; // Clear the input field
 });
 
-// document.getElementById("send").addEventListener("click", async function() {
-// 	let input = document.getElementById("input").value.trim();
-// 	if (!input) {
-// 		return;
-// 	}
-
-// 	// Wait for the async getReply to resolve before adding the bot response
-// 	let reply = await getReply(input); // Wait for the promise to resolve
-// 	addChat(input, reply);  // Add the input and reply to the chat
-
-// 	document.getElementById("input").value = ""; // Clear the input field
-// });
 skip = document.getElementById("skip");
 if(skip)
 {skip.addEventListener("click", async function() {
