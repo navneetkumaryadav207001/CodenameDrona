@@ -155,18 +155,6 @@ body .card #message-section #bot {
 	background-color: rgba(169, 169, 169, 0.15);
 	color: #e0e0e0;
 	align-self: flex-start; /* Align bot messages to the left */
-	animation: typing 3.5s steps(40, end), blink 0.75s step-end infinite;
-}
-
-@keyframes typing {
-    from { width: 0; }
-    to { width: 100%; } /* Reveals full text over time */
-}
-
-/* Blinking cursor effect */
-@keyframes blink {
-    from, to { border-color: transparent; }
-    50% { border-color: black; }
 }
 
 body .card #message-section #user {
