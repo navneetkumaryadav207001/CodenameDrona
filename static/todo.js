@@ -1,8 +1,6 @@
 const inputBox = document.getElementById("input-box");
 const listContainer = document.getElementById("list-container");
 
-console.log(listContainer)
-
 document.getElementById("add-btn").addEventListener("click", addTask);
 addEventListener("keydown", (e) => {
     if(e.key == "Enter"){
