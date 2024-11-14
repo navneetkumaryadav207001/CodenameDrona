@@ -42,7 +42,7 @@ tl.from("#homeImage img",{
 
 gsap.from("#aboutDrona",{
     scale:1.5,
-    x:-300,
+    x:300,
     opacity:0,
     duration:0.5,
     scrollTrigger:{
@@ -55,8 +55,8 @@ gsap.from("#aboutDrona",{
 })
 
 gsap.from("#aboutImage img",{
-    scale:1.5,
-    x:300,
+    // scale:1.5,
+    x:-300,
     opacity:0,
     duration:0.5,
     scrollTrigger:{
