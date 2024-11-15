@@ -119,10 +119,6 @@ form p{
     align-items: center;
     justify-content: center;
 }
-#continue button{
-    background: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678);
-    color: black;
-}
 .sign-in button{
     display: flex;
     align-items: center;
