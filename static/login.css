@@ -100,7 +100,8 @@ form button{
     width: 80%;
     height: 45px;
     border-radius: 12px; 
-    background: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678); 
+    color: black;
+/*     background: linear-gradient(to right, #4C83EF, #AA6EB4, #D46678);  */
     color: white;
     font-size: 17px;
     font-weight: bold;
