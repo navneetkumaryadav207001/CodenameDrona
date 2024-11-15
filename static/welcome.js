@@ -34,15 +34,15 @@ tl.from("#homeOptions p",{
 },"-=0.5")
 
 tl.from("#homeImage img",{
-    x:200,
+    x:100,
     opacity:0,
     duration:0.8,
     scrub:2
 },"-=0.5")
 
 gsap.from("#aboutDrona",{
-    scale:1.5,
-    x:300,
+    // scale:1.5,
+    x:200,
     opacity:0,
     duration:0.5,
     scrollTrigger:{
