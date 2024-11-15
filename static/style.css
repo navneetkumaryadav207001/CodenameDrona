@@ -208,7 +208,7 @@ body .card #message-section #user {
 	align-items: center;
 	position: relative;
 	padding: 10px;
-	gap: 10px;
+	gap: 5px;
 }
 #input{
 	width: 70%;
