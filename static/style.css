@@ -218,6 +218,7 @@ body .card #message-section #user {
 	background-color: #2F2F2F;
 	color: white;
 	border: none;
+	outline: none;
 }
 #input::placeholder{
 	color: rgb(202, 202, 202);
@@ -255,6 +256,7 @@ body .card #message-section #user {
 	padding: 10px;
 	margin: 0px 10px;
 	border: none;
+	outline: none;
 }
 #inputSearch::placeholder{
 	font-size: 13px;
