@@ -35,7 +35,15 @@
             <button>Learn More</button>
         </div>
         <div id="homeImage">
-            <img src="{{ url_for('static', filename='image/welcome1.png') }}" alt="">
+            <div style="position: relative; width: 100%; height: 100vh;">
+                <iframe 
+                    src="https://sketchfab.com/models/dcbd0761567b41ce9da34f24a3dd9b31/embed?transparent=1&autostart=1" 
+                    frameborder="0" 
+                    allow="autoplay; fullscreen; xr-spatial-tracking" 
+                    style="width: 100%; height: 100%; background: none;">
+                </iframe>
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent;"></div>
+            </div>
         </div>
     </div>
     <div id="about">
