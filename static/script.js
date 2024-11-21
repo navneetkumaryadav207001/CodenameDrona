@@ -92,6 +92,15 @@ document.getElementById("send").addEventListener("click", async function() {
 	document.getElementById("input").value = ""; // Clear the input field
 });
 
+document.getElementById("input").addEventListener('keydown',(e)=>{
+	let input = document.getElementById("input").value.trim();
+	let reply = await getReply(input); // Wait for the promise to resolve
+	
+	if(e.key === 'Enter'){
+		addChat(input, reply);
+	}
+})
+
 skip = document.getElementById("skip");
 if(skip)
 {skip.addEventListener("click", async function() {
@@ -163,9 +172,11 @@ btn.addEventListener('click', () => {
 		btn.style.visibility = 'hidden';
 		btn.classList.add('rotate');
 });
+
+ // Shrink sidebar and hide elements
+
 btn2.addEventListener('click', () => {
 	screenWidth = window.innerWidth;
-        // Shrink sidebar and hide elements
 		if(screenWidth>800)
        { 
 		console.log("yes");
