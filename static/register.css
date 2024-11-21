@@ -18,7 +18,7 @@ html{
     scroll-behavior: smooth;
 }
 .document{
-    width: 40%;
+    width: 500px;
     margin: auto;
     background-color: transparent;
     backdrop-filter: blur(10px);
