@@ -65,13 +65,13 @@ function addChat(input, product) {
 	let userDiv = document.createElement("div");
 	userDiv.id = "user";
 	userDiv.classList.add("message");
-	userDiv.innerHTML = `<span id="user-response">${input}</span>`;
+	userDiv.innerHTML = <span id="user-response">${input}</span>;
 	mainDiv.appendChild(userDiv);
 
 	let botDiv = document.createElement("div");
 	botDiv.id = "bot";
 	botDiv.classList.add("message");
-	botDiv.innerHTML = `<span id="bot-response">${marked.parse(product)}</span>`;
+	botDiv.innerHTML = <span id="bot-response">${marked.parse(product)}</span>;
 	mainDiv.appendChild(botDiv);
 
 	// Scroll to the bottom after adding new messages
@@ -91,15 +91,6 @@ document.getElementById("send").addEventListener("click", async function() {
 
 	document.getElementById("input").value = ""; // Clear the input field
 });
-
-document.getElementById("input").addEventListener('keydown',(e)=>{
-	let input = document.getElementById("input").value.trim();
-	let reply = await getReply(input); // Wait for the promise to resolve
-	
-	if(e.key === 'Enter'){
-		addChat(input, reply);
-	}
-})
 
 skip = document.getElementById("skip");
 if(skip)
@@ -131,7 +122,7 @@ async function loadChatFromDatabase() {
 				{
 					chat.message = marked.parse(chat.message)
 				}
-				messageDiv.innerHTML = `<span id="${chat.role}-response">${chat.message}</span>`;
+				messageDiv.innerHTML = <span id="${chat.role}-response">${chat.message}</span>;
 				if(count === 0)
 				{
 					count++;
@@ -172,11 +163,9 @@ btn.addEventListener('click', () => {
 		btn.style.visibility = 'hidden';
 		btn.classList.add('rotate');
 });
-
- // Shrink sidebar and hide elements
-
 btn2.addEventListener('click', () => {
 	screenWidth = window.innerWidth;
+        // Shrink sidebar and hide elements
 		if(screenWidth>800)
        { 
 		console.log("yes");
