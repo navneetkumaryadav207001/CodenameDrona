@@ -6,6 +6,7 @@
     <!-- Link to your static CSS file using Jinja -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
     <title>DRONA</title>
 </head>
 <body>
@@ -95,7 +96,9 @@
             <!-- Input Section -->
             <div id="input-section" style="align-self: center;">
                   <input type="text" id="input" placeholder="Message Drona..." required>
-                  <button id="send" type="submit" ><i style="font-size: 25px" class='bx bxs-send bx-rotate-270' ></i></button>
+<!--                   <button id="send" type="submit" ><i style="font-size: 25px" class='bx bxs-send bx-rotate-270'></i></button> -->
+                  <button id="send" type="submit" ><i style="font-size: 25px; border-radius:50%; background-color: #242424; padding: 10px;" class="ri-arrow-up-line"></i></button>
+        
 <!--                 {% if level == 1 %}
                         <button type="submit" id="skip"><i class='bx bx-right-arrow-alt'></i></button>
                 {% endif %} -->
