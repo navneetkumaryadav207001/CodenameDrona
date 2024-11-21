@@ -50,7 +50,108 @@
         <h1 style="padding: 2vw 3vw;">WANT TO KNOW ABOUT US?</h1>
         <div id="aboutContainer">
             <div id="aboutImage">
-                <img src="{{ url_for('static', filename='image/welcome2.png') }}" alt="">
+                <div id="loading">Loading Model...</div>
+            
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+            
+                <script>
+                    const scene = new THREE.Scene();
+                    scene.background = null; // Transparent background
+                    const aboutImageDiv = document.getElementById("aboutContainer");
+            
+                    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                    renderer.setSize(window.innerWidth, aboutContainer.clientWidth/2.5);
+                    document.getElementById("aboutImage").appendChild(renderer.domElement);
+            
+                    const keyLight = new THREE.DirectionalLight(0xffffff, 1);
+                    keyLight.position.set(2, 4, 5);
+                    scene.add(keyLight);
+            
+                    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+                    scene.add(ambientLight);
+            
+                    const loader = new THREE.GLTFLoader();
+                    let mixer = null; // Animation mixer for handling animations
+            
+                    loader.load(
+                        "{{url_for('static',filename='image/tp2.glb')}}", // Path to your GLB file
+                        (gltf) => {
+                            document.getElementById("loading").style.display = "none";
+                            const model = gltf.scene;
+                            scene.add(model);
+            
+                            let laser = null;
+                            model.traverse((node) => {
+                                if (node.name === 'Laser') {
+                                    laser = node;
+                                }
+                            });
+            
+                            // Set up animations if they exist in the GLTF file
+                            if (gltf.animations && gltf.animations.length > 0) {
+                                mixer = new THREE.AnimationMixer(model);
+            
+                                const action = mixer.clipAction(gltf.animations[0]); // Play the first animation
+                                action.loop = THREE.LoopRepeat; // Set animation to loop
+                                action.play();
+                            }
+            
+                            const raycaster = new THREE.Raycaster();
+                            const mouse = new THREE.Vector2();
+            
+                            document.addEventListener('mousemove', (event) => {
+                                // Normalize mouse position (-1 to 1 range for WebGL)
+                                mouse.x = -(event.clientX / window.innerWidth) * 2 ;
+                                mouse.y = (event.clientY / window.innerHeight) * 2 - 1.5;
+            
+                                // Update the raycaster with the normalized mouse coordinates
+                                raycaster.setFromCamera(mouse, camera);
+            
+                                // Get the world position the ray points to
+                                const target = raycaster.ray.origin.clone().add(raycaster.ray.direction.clone().multiplyScalar(10)); // Adjust depth with scalar
+            
+                                // Rotate the model to look at the target position
+                                model.lookAt(target);
+            
+                                if (laser) {
+                                    // Laser points towards the same target
+                                    laser.lookAt(target);
+                                }
+                            });
+            
+                            camera.position.set(window.innerWidth/1000*1, 0.25, 1.7);
+                            animate();
+                        },
+                        undefined,
+                        (error) => {
+                            console.error('An error occurred while loading the model:', error);
+                            document.getElementById("loading").innerText = "Failed to load model.";
+                        }
+                    );
+            
+                    const clock = new THREE.Clock(); // Create a clock to track elapsed time
+            
+            function animate() {
+                requestAnimationFrame(animate);
+            
+                // Update the animation mixer with accurate deltaTime
+                if (mixer) {
+                    const deltaTime = clock.getDelta(); // Get the time elapsed since the last frame in seconds
+                    mixer.update(deltaTime); // Update mixer based on actual deltaTime
+                }
+            
+                renderer.render(scene, camera);
+            }
+            
+                    window.addEventListener('resize', () => {
+                        renderer.setSize(window.innerWidth, aboutContainer.clientWidth/2.5);
+                        camera.position.set(window.innerWidth/1000*1, 0.25, 1.7);
+                        
+                        camera.updateProjectionMatrix();
+                    });
+                </script>
             </div>
             <div id="aboutDrona">
                 <h1>Who is DRONA?</h1>
