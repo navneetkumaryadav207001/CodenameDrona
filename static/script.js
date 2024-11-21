@@ -43,7 +43,7 @@ async function getReply(string) {
                 
                 // Append the form to the body and submit it
                 document.body.appendChild(form);
-				
+                
                 form.submit();
             }
 
@@ -61,89 +61,89 @@ async function getReply(string) {
 
 
 function addChat(input, product) {
-	const mainDiv = document.getElementById("message-section");
-	let userDiv = document.createElement("div");
-	userDiv.id = "user";
-	userDiv.classList.add("message");
-	userDiv.innerHTML = <span id="user-response">${input}</span>;
-	mainDiv.appendChild(userDiv);
+    const mainDiv = document.getElementById("message-section");
+    let userDiv = document.createElement("div");
+    userDiv.id = "user";
+    userDiv.classList.add("message");
+    userDiv.innerHTML = `<span id="user-response">${input}</span>`;
+    mainDiv.appendChild(userDiv);
 
-	let botDiv = document.createElement("div");
-	botDiv.id = "bot";
-	botDiv.classList.add("message");
-	botDiv.innerHTML = <span id="bot-response">${marked.parse(product)}</span>;
-	mainDiv.appendChild(botDiv);
+    let botDiv = document.createElement("div");
+    botDiv.id = "bot";
+    botDiv.classList.add("message");
+    botDiv.innerHTML = `<span id="bot-response">${marked.parse(product)}</span>`;
+    mainDiv.appendChild(botDiv);
 
-	// Scroll to the bottom after adding new messages
-	var scroll = document.getElementById("message-section");
-	scroll.scrollTop = scroll.scrollHeight;
+    // Scroll to the bottom after adding new messages
+    var scroll = document.getElementById("message-section");
+    scroll.scrollTop = scroll.scrollHeight;
 }
 
 document.getElementById("send").addEventListener("click", async function() {
-	let input = document.getElementById("input").value.trim();
-	if (!input) {
-		return;
-	}
+    let input = document.getElementById("input").value.trim();
+    if (!input) {
+        return;
+    }
 
-	// Wait for the async getReply to resolve before adding the bot response
-	let reply = await getReply(input); // Wait for the promise to resolve
-	addChat(input, reply);  // Add the input and reply to the chat
+    // Wait for the async getReply to resolve before adding the bot response
+    let reply = await getReply(input); // Wait for the promise to resolve
+    addChat(input, reply);  // Add the input and reply to the chat
 
-	document.getElementById("input").value = ""; // Clear the input field
+    document.getElementById("input").value = ""; // Clear the input field
 });
 
 skip = document.getElementById("skip");
 if(skip)
 {skip.addEventListener("click", async function() {
-	// Wait for the async getReply to resolve before adding the bot response
-	let reply = await getReply("skip the basics"); // Wait for the promise to resolve
-	addChat("skip the basics", reply);  // Add the input and reply to the chat
+    // Wait for the async getReply to resolve before adding the bot response
+    let reply = await getReply("skip the basics"); // Wait for the promise to resolve
+    addChat("skip the basics", reply);  // Add the input and reply to the chat
 
-	document.getElementById("input").value = ""; // Clear the input field
+    document.getElementById("input").value = ""; // Clear the input field
 });}
 
 async function loadChatFromDatabase() {
-	try {
-		let response = await fetch('/chat_history', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-		if (response.ok) {
-			let chatHistory = await response.json();
-			const mainDiv = document.getElementById("message-section");
+    try {
+        let response = await fetch('/chat_history', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (response.ok) {
+            let chatHistory = await response.json();
+            const mainDiv = document.getElementById("message-section");
 
-			chatHistory.forEach(chat => {
-				let messageDiv = document.createElement("div");
-				messageDiv.id = chat.role;
-				messageDiv.classList.add("message");
-				if(chat.role == 'bot')
-				{
-					chat.message = marked.parse(chat.message)
-				}
-				messageDiv.innerHTML = <span id="${chat.role}-response">${chat.message}</span>;
-				if(count === 0)
-				{
-					count++;
-				}
-				else{mainDiv.appendChild(messageDiv);}
-			});
+            chatHistory.forEach(chat => {
+                let messageDiv = document.createElement("div");
+                messageDiv.id = chat.role;
+                messageDiv.classList.add("message");
+                if(chat.role == 'bot')
+                {
+                    chat.message = marked.parse(chat.message)
+                }
+                messageDiv.innerHTML = `<span id="${chat.role}-response">${chat.message}</span>`;
+                if(count === 0)
+                {
+                    count++;
+                }
+                else{mainDiv.appendChild(messageDiv);}
+            });
 
-			// Scroll to the bottom after loading chat history
-			var scroll = document.getElementById("message-section");
-			scroll.scrollTop = scroll.scrollHeight;
-		} else {
-			console.error('Failed to load chat history:', response.statusText);
-		}
-	} catch (error) {
-		console.error('Error loading chat history:', error);
-	}
+            // Scroll to the bottom after loading chat history
+            var scroll = document.getElementById("message-section");
+            scroll.scrollTop = scroll.scrollHeight;
+        } else {
+            console.error('Failed to load chat history:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error loading chat history:', error);
+    }
 }
 
 // Load chat history when the page is loaded
 window.addEventListener("load", function() {
-	loadChatFromDatabase();
+    loadChatFromDatabase();
 });
 
 let btn=document.getElementById('btn');
@@ -156,30 +156,30 @@ let screenWidth = window.innerWidth;
 btn.addEventListener('click', () => {
         // Shrink sidebar and hide elements
         sidebar.style.width = '0px';
-		sidebar.style.visibility = 'hidden';
-		card.style.visibility = 'visible';
-		card.style.width = '100%';
-		btn2.style.visibility = 'visible';
-		btn.style.visibility = 'hidden';
-		btn.classList.add('rotate');
+        sidebar.style.visibility = 'hidden';
+        card.style.visibility = 'visible';
+        card.style.width = '100%';
+        btn2.style.visibility = 'visible';
+        btn.style.visibility = 'hidden';
+        btn.classList.add('rotate');
 });
 btn2.addEventListener('click', () => {
-	screenWidth = window.innerWidth;
+    screenWidth = window.innerWidth;
         // Shrink sidebar and hide elements
-		if(screenWidth>800)
+        if(screenWidth>800)
        { 
-		console.log("yes");
-		sidebar.style.width = '25vw';
-	}
-		else{
-			console.log("yes2");
-			card.style.visibility = 'visible';
-			card.style.width = '25vw';
-			sidebar.style.width = '75vw';
-		}
-		sidebar.style.visibility = 'visible';
-		btn.style.visibility = 'visible';
-		btn2.style.visibility = 'hidden';
-		btn.classList.remove('rotate');
+        console.log("yes");
+        sidebar.style.width = '25vw';
+    }
+        else{
+            console.log("yes2");
+            card.style.visibility = 'visible';
+            card.style.width = '25vw';
+            sidebar.style.width = '75vw';
+        }
+        sidebar.style.visibility = 'visible';
+        btn.style.visibility = 'visible';
+        btn2.style.visibility = 'hidden';
+        btn.classList.remove('rotate');
     btn2.classList.add('rotate'); 
 });
